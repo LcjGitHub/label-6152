@@ -1,0 +1,271 @@
+{
+  "enclosures": [
+    {
+      "id": "ziwei",
+      "name": "紫微垣",
+      "description": "三垣之首，位于北天极附近，象征天帝所居之宫。"
+    },
+    {
+      "id": "taiwei",
+      "name": "太微垣",
+      "description": "三垣之中，位于紫微垣之南，象征朝廷行政机构。"
+    },
+    {
+      "id": "tianshi",
+      "name": "天市垣",
+      "description": "三垣之末，位于南方，象征天下集市与商贸。"
+    }
+  ],
+  "stars": [
+    {
+      "id": "ziwei-xing",
+      "name": "紫微星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 50,
+      "y": 18,
+      "magnitude": 2.2,
+      "summary": "北极附近最亮星之一，古称「帝星」，象征天帝。"
+    },
+    {
+      "id": "tianji-xing",
+      "name": "天机星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 42,
+      "y": 22,
+      "magnitude": 3.5,
+      "summary": "北斗七星之一，主智慧谋略，属紫微垣辅星。"
+    },
+    {
+      "id": "taiyang-xing",
+      "name": "太阳星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 58,
+      "y": 20,
+      "magnitude": 3.8,
+      "summary": "象征日精，与太阴相对，主光明与权威。"
+    },
+    {
+      "id": "wuqu-xing",
+      "name": "武曲星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 46,
+      "y": 28,
+      "magnitude": 1.8,
+      "summary": "北斗第六星，五行属金，主财富与武勇。"
+    },
+    {
+      "id": "tianfu-xing",
+      "name": "天府星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 54,
+      "y": 26,
+      "magnitude": 3.2,
+      "summary": "南斗主星，库藏之星，象征禄位与积蓄。"
+    },
+    {
+      "id": "taiyin-xing",
+      "name": "太阴星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 62,
+      "y": 24,
+      "magnitude": 2.9,
+      "summary": "象征月精，主阴柔、母性与情感。"
+    },
+    {
+      "id": "tanlang-xing",
+      "name": "贪狼星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 38,
+      "y": 30,
+      "magnitude": 1.9,
+      "summary": "北斗第一星，主欲望与才艺，变化多端。"
+    },
+    {
+      "id": "jumen-xing",
+      "name": "巨门星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 52,
+      "y": 32,
+      "magnitude": 3.1,
+      "summary": "暗星，主口舌是非，亦主辩才与暗秘。"
+    },
+    {
+      "id": "tianxiang-xing",
+      "name": "天相星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 48,
+      "y": 48,
+      "magnitude": 2.4,
+      "summary": "南斗第五星，为辅弼之星，主印信与辅佐。"
+    },
+    {
+      "id": "tianliang-xing",
+      "name": "天梁星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 55,
+      "y": 45,
+      "magnitude": 2.8,
+      "summary": "南斗第二星，寿星，主荫庇、化解与寿算。"
+    },
+    {
+      "id": "qisha-xing",
+      "name": "七杀星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 42,
+      "y": 52,
+      "magnitude": 2.1,
+      "summary": "南斗第六星，将星，主肃杀、变革与果断。"
+    },
+    {
+      "id": "pojun-xing",
+      "name": "破军星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 58,
+      "y": 52,
+      "magnitude": 2.3,
+      "summary": "北斗第七星，耗星，主破坏与开创，先破后立。"
+    },
+    {
+      "id": "tianji-xing2",
+      "name": "天玑星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 50,
+      "y": 55,
+      "magnitude": 2.6,
+      "summary": "北斗第三星，主权衡机变，善于察势而动。"
+    },
+    {
+      "id": "tianquan-xing",
+      "name": "天权星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 46,
+      "y": 58,
+      "magnitude": 3.0,
+      "summary": "北斗第四星，权柄之星，主决策与统御。"
+    },
+    {
+      "id": "yuheng-xing",
+      "name": "玉衡星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 35,
+      "y": 72,
+      "magnitude": 1.6,
+      "summary": "北斗第五星，又名廉贞，主品秩与法度。"
+    },
+    {
+      "id": "kaiyang-xing",
+      "name": "开阳星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 48,
+      "y": 75,
+      "magnitude": 2.0,
+      "summary": "北斗第六星，辅星，主辅助与开启。"
+    },
+    {
+      "id": "yaoguang-xing",
+      "name": "摇光星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 62,
+      "y": 78,
+      "magnitude": 1.9,
+      "summary": "北斗第七星，又名破军，为斗柄末端，主变动。"
+    },
+    {
+      "id": "dubhe-xing",
+      "name": "天枢星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 28,
+      "y": 68,
+      "magnitude": 1.8,
+      "summary": "北斗第一星，斗柄之始，主枢纽与起始。"
+    },
+    {
+      "id": "tianxuan-xing",
+      "name": "天璇星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 40,
+      "y": 70,
+      "magnitude": 2.4,
+      "summary": "北斗第二星，主旋转与运转，象征循环。"
+    },
+    {
+      "id": "tianji-xing3",
+      "name": "天玑星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 55,
+      "y": 82,
+      "magnitude": 2.7,
+      "summary": "市垣南星，主商贸机变，与太微垣天玑同名而异域。"
+    },
+    {
+      "id": "tianyi-xing",
+      "name": "天乙星",
+      "enclosure": "天市垣",
+      "enclosureId": "tianshi",
+      "x": 68,
+      "y": 74,
+      "magnitude": 3.3,
+      "summary": "贵人星，主逢凶化吉，得贵人相助。"
+    },
+    {
+      "id": "zuofu-xing",
+      "name": "左辅星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 35,
+      "y": 24,
+      "magnitude": 3.6,
+      "summary": "紫微垣辅星，主左膀右臂，辅佐帝星。"
+    },
+    {
+      "id": "youbi-xing",
+      "name": "右弼星",
+      "enclosure": "紫微垣",
+      "enclosureId": "ziwei",
+      "x": 65,
+      "y": 28,
+      "magnitude": 3.7,
+      "summary": "紫微垣辅星，与左辅相对，主协同与平衡。"
+    },
+    {
+      "id": "wenchang-xing",
+      "name": "文昌星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 52,
+      "y": 42,
+      "magnitude": 3.4,
+      "summary": "文曲之星，主科举、文运与才学。"
+    },
+    {
+      "id": "wenqu-xing",
+      "name": "文曲星",
+      "enclosure": "太微垣",
+      "enclosureId": "taiwei",
+      "x": 44,
+      "y": 46,
+      "magnitude": 3.5,
+      "summary": "文艺之星，主口才、艺术与非正统才学。"
+    }
+  ]
+}
