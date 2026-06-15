@@ -5,6 +5,7 @@ import { StarMapPage } from '@/pages/StarMapPage';
 import { OverviewPage } from '@/pages/OverviewPage';
 import { FavoritePage } from '@/pages/FavoritePage';
 import { LunarMansionPage } from '@/pages/LunarMansionPage';
+import { FourSymbolsPage } from '@/pages/FourSymbolsPage';
 import { StatisticsPage } from '@/pages/StatisticsPage';
 import { HistoryPage } from '@/pages/HistoryPage';
 import { ComparePage } from '@/pages/ComparePage';
@@ -19,6 +20,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<StarListPage />} />
         <Route path="/概览" element={<OverviewPage />} />
+        <Route path="/四象" element={<FourSymbolsPage />} />
         <Route path="/二十八宿" element={<LunarMansionPage />} />
         <Route path="/map" element={<StarMapPage />} />
         <Route path="/统计" element={<StatisticsPage />} />

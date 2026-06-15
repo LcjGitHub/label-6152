@@ -11,13 +11,14 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Button,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, CloseIcon } from '@chakra-ui/icons';
 import { useLunarMansionStore } from '@/store/lunarMansionStore';
 import { MansionDetailDrawer } from '@/components/MansionDetailDrawer';
 import type { LunarMansion } from '@/types/lunarMansion';
-import { createMansionFuse, searchMansions } from '@/utils/mansionUtils';
-import { getSearchParam, setSearchParam } from '@/utils/urlUtils';
+import { createMansionFuse, searchMansions, filterMansionsByDirection, isValidDirection } from '@/utils/mansionUtils';
+import { getSearchParam, setSearchParam, deleteSearchParam } from '@/utils/urlUtils';
 
 const directionColors: Record<string, string> = {
   '东方苍龙': 'green',
@@ -37,6 +38,8 @@ export function LunarMansionPage() {
   const { groups, mansions, selectedMansion, drawerOpen, openDrawer, closeDrawer } = useLunarMansionStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = getSearchParam(searchParams, 'q');
+  const direction = getSearchParam(searchParams, 'direction');
+  const activeDirection = isValidDirection(direction) ? direction : null;
 
   const setQuery = useCallback(
     (value: string) => {
@@ -46,8 +49,20 @@ export function LunarMansionPage() {
     [searchParams, setSearchParams],
   );
 
+  const clearDirection = useCallback(() => {
+    const nextParams = deleteSearchParam(searchParams, 'direction');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const fuse = useMemo(() => createMansionFuse(mansions), [mansions]);
-  const filteredMansions = useMemo(() => searchMansions(mansions, fuse, query), [mansions, fuse, query]);
+  const directionFiltered = useMemo(
+    () => filterMansionsByDirection(mansions, direction),
+    [mansions, direction],
+  );
+  const filteredMansions = useMemo(
+    () => searchMansions(directionFiltered, fuse, query),
+    [directionFiltered, fuse, query],
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<string, LunarMansion[]>();
@@ -77,19 +92,54 @@ export function LunarMansionPage() {
         </Text>
       </Box>
 
-      <InputGroup maxW="400px">
-        <InputLeftElement pointerEvents="none">
-          <SearchIcon color="gray.500" />
-        </InputLeftElement>
-        <Input
-          placeholder="搜索星宿名称、方位或简介…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          bg="whiteAlpha.100"
-          border="none"
-          _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
-        />
-      </InputGroup>
+      <HStack spacing={3} flexWrap="wrap">
+        <InputGroup maxW="400px">
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color="gray.500" />
+          </InputLeftElement>
+          <Input
+            placeholder="搜索星宿名称、方位或简介…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            bg="whiteAlpha.100"
+            border="none"
+            _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
+          />
+        </InputGroup>
+        {activeDirection && (
+          <HStack>
+            <Text fontSize="sm" color="gray.400">
+              筛选：
+            </Text>
+            <Badge
+              colorScheme={directionColors[activeDirection]}
+              fontSize="sm"
+              px={3}
+              py={1}
+              borderRadius="md"
+              display="inline-flex"
+              alignItems="center"
+              gap={2}
+            >
+              <Text>{directionSymbols[activeDirection]}</Text>
+              <Text>{activeDirection}</Text>
+              <Button
+                size="xs"
+                variant="ghost"
+                colorScheme={directionColors[activeDirection]}
+                onClick={clearDirection}
+                aria-label="清除方位筛选"
+                minW="auto"
+                h="auto"
+                p={0}
+                _hover={{ bg: 'transparent' }}
+              >
+                <CloseIcon boxSize={2} />
+              </Button>
+            </Badge>
+          </HStack>
+        )}
+      </HStack>
 
       {filteredMansions.length === 0 ? (
         <Text color="gray.500" py={8} textAlign="center">

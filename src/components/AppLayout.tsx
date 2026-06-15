@@ -22,8 +22,9 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   const navItems: NavItem[] = [
     { path: '/概览', label: '概览' },
+    { path: '/四象', label: '四象' },
     { path: '/', label: '星官列表', clearParams: ['enclosure'] },
-    { path: '/二十八宿', label: '二十八宿' },
+    { path: '/二十八宿', label: '二十八宿', clearParams: ['direction'] },
     { path: '/map', label: '简化星图' },
     { path: '/对照', label: '对照' },
     { path: '/统计', label: '统计' },
