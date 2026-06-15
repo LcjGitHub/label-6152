@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack, HStack } from '@chakra-ui/react';
 import { useStarStore } from '@/store/starStore';
 import { StarMapCanvas } from '@/components/StarMapCanvas';
 import { StarDetailPopover } from '@/components/StarDetailPopover';
+import { LegendPanel } from '@/components/LegendPanel';
 import type { Star, PopoverAnchor } from '@/types/star';
 
 /**
@@ -40,15 +41,18 @@ export function StarMapPage() {
         </Text>
       </Box>
 
-      <Box position="relative">
-        <StarMapCanvas stars={stars} enclosures={enclosures} onStarClick={handleStarClick} />
-        <StarDetailPopover
-          star={selectedStar}
-          anchor={anchor}
-          isOpen={popoverOpen}
-          onClose={handleClosePopover}
-        />
-      </Box>
+      <HStack align="stretch" spacing={4}>
+        <Box position="relative" flex="1">
+          <StarMapCanvas stars={stars} enclosures={enclosures} onStarClick={handleStarClick} />
+          <StarDetailPopover
+            star={selectedStar}
+            anchor={anchor}
+            isOpen={popoverOpen}
+            onClose={handleClosePopover}
+          />
+        </Box>
+        <LegendPanel />
+      </HStack>
     </VStack>
   );
 }

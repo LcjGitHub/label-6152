@@ -1,6 +1,64 @@
 import Fuse from 'fuse.js';
 import type { Star } from '@/types/star';
 
+export interface LegendItem {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface LegendCategory {
+  id: string;
+  title: string;
+  items: LegendItem[];
+}
+
+export const LEGEND_DATA: LegendCategory[] = [
+  {
+    id: 'enclosures',
+    title: '三垣区域',
+    items: [
+      {
+        id: 'ziwei',
+        title: '紫微垣',
+        description: '北天中央的天区，又称紫宫，是天帝居住的地方，象征皇宫。',
+      },
+      {
+        id: 'taiwei',
+        title: '太微垣',
+        description: '紫微垣下的天区，象征朝廷，是政府官员所在的地方。',
+      },
+      {
+        id: 'tianshi',
+        title: '天市垣',
+        description: '位于南天的天区，象征街市，是天子率诸侯行幸的都市。',
+      },
+    ],
+  },
+  {
+    id: 'starMagnitude',
+    title: '星点大小',
+    items: [
+      {
+        id: 'magnitude',
+        title: '视星等',
+        description: '星点大小代表视星等，数值越小星星越亮，星点也越大。视星等每相差 1 等，亮度相差约 2.512 倍。',
+      },
+    ],
+  },
+  {
+    id: 'background',
+    title: '背景装饰',
+    items: [
+      {
+        id: 'decorative',
+        title: '背景散点',
+        description: '背景中的浅色小点仅为装饰效果，用于增强星图氛围感，不对应具体的星官或恒星。',
+      },
+    ],
+  },
+];
+
 /**
  * 构建星官模糊搜索实例
  * @param stars - 星官列表
