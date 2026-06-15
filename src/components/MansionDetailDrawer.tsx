@@ -16,6 +16,7 @@ import {
   WrapItem,
   Divider,
 } from '@chakra-ui/react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import type { LunarMansion } from '@/types/lunarMansion';
 
 interface MansionDetailDrawerProps {
@@ -43,9 +44,18 @@ export function MansionDetailDrawer({ mansion, isOpen, onClose }: MansionDetailD
               <Text fontSize="xl" fontWeight="bold">
                 {mansion?.name ?? '星宿详情'}
               </Text>
-              <Badge fontSize="sm" colorScheme={mansion ? directionColors[mansion.direction] : 'gray'}>
-                第 {mansion?.order ?? '-'} 宿
-              </Badge>
+              <HStack gap={2}>
+                <Badge fontSize="sm" colorScheme={mansion ? directionColors[mansion.direction] : 'gray'}>
+                  第 {mansion?.order ?? '-'} 宿
+                </Badge>
+                {mansion && (
+                  <FavoriteButton
+                    itemId={mansion.id}
+                    itemName={mansion.name}
+                    type="lunarMansion"
+                  />
+                )}
+              </HStack>
             </HStack>
             <Text fontSize="sm" color="gray.400">
               {mansion?.pinyin}

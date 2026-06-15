@@ -57,7 +57,7 @@ export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProp
             <Text fontSize="lg" fontWeight="bold">
               {star?.name ?? '星官详情'}
             </Text>
-            {star && <FavoriteButton starId={star.id} starName={star.name} />}
+            {star && <FavoriteButton itemId={star.id} itemName={star.name} />}
           </HStack>
         </DrawerHeader>
         <DrawerBody>

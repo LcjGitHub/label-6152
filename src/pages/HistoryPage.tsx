@@ -143,7 +143,7 @@ export function HistoryPage() {
                     <Badge fontSize="xs" colorScheme="blue">
                       {item.star.magnitude} 等
                     </Badge>
-                    <FavoriteButton starId={item.star.id} starName={item.star.name} size="sm" />
+                    <FavoriteButton itemId={item.star.id} itemName={item.star.name} size="sm" />
                   </HStack>
                 </HStack>
                 <Text fontSize="sm" color="gray.400" noOfLines={2} mb={2}>

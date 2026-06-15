@@ -16,6 +16,7 @@ import {
 import { SearchIcon, CloseIcon } from '@chakra-ui/icons';
 import { useLunarMansionStore } from '@/store/lunarMansionStore';
 import { MansionDetailDrawer } from '@/components/MansionDetailDrawer';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import type { LunarMansion } from '@/types/lunarMansion';
 import { createMansionFuse, searchMansions, filterMansionsByDirection, isValidDirection } from '@/utils/mansionUtils';
 import { getSearchParam, setSearchParam, deleteSearchParam } from '@/utils/urlUtils';
@@ -198,9 +199,17 @@ export function LunarMansionPage() {
                             第{mansion.order}宿
                           </Badge>
                         </HStack>
-                        <Badge fontSize="xs" colorScheme="purple" variant="outline">
-                          {mansion.symbol}
-                        </Badge>
+                        <HStack gap={1}>
+                          <Badge fontSize="xs" colorScheme="purple" variant="outline">
+                            {mansion.symbol}
+                          </Badge>
+                          <FavoriteButton
+                            itemId={mansion.id}
+                            itemName={mansion.name}
+                            type="lunarMansion"
+                            size="sm"
+                          />
+                        </HStack>
                       </HStack>
                       <Text fontSize="xs" color="gray.500" mb={2}>
                         {mansion.pinyin}
