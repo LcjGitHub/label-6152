@@ -25,6 +25,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     { path: '/', label: '星官列表', clearParams: ['enclosure'] },
     { path: '/二十八宿', label: '二十八宿' },
     { path: '/map', label: '简化星图' },
+    { path: '/对照', label: '对照' },
     { path: '/统计', label: '统计' },
     { path: '/收藏', label: '我的收藏' },
     { path: '/历史', label: '历史' },
