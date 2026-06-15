@@ -72,7 +72,12 @@ export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProp
                   示意位置：{star.x}% × {star.y}%
                 </Text>
               </Box>
-              <Button colorScheme="purple" variant="outline" onClick={handleViewInMap}>
+              <Button
+                colorScheme="purple"
+                variant="outline"
+                onClick={handleViewInMap}
+                aria-label={star ? `在星图中查看并定位${star.name}` : '在星图中查看'}
+              >
                 在星图中查看
               </Button>
             </VStack>

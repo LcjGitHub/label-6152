@@ -16,7 +16,14 @@ interface StarState {
   selectStar: (star: Star | null) => void;
   openDrawer: (star: Star) => void;
   closeDrawer: () => void;
+  /**
+   * 设置待定位星官 ID，供星图页读取并高亮定位
+   * @param id - 目标星官 ID，传 null 可手动清空
+   */
   setPendingLocateStarId: (id: string | null) => void;
+  /**
+   * 消费并清空待定位星官 ID，星图页完成自动定位后调用
+   */
   clearPendingLocateStarId: () => void;
   getStarsByEnclosure: (enclosureId: string) => Star[];
   getStarCountByEnclosure: (enclosureId: string) => number;

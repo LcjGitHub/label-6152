@@ -16,7 +16,7 @@ export function StarMapPage() {
   const [anchor, setAnchor] = useState<PopoverAnchor | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [highlightStarId, setHighlightStarId] = useState<string | null>(null);
-  const canvasWrapperRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleStarClick = (star: Star, anchorX: number, anchorY: number) => {
     setSelectedStar(star);
@@ -29,7 +29,6 @@ export function StarMapPage() {
     setPopoverOpen(false);
     setSelectedStar(null);
     setAnchor(null);
-    setHighlightStarId(null);
   };
 
   useEffect(() => {
@@ -42,13 +41,13 @@ export function StarMapPage() {
     }
 
     const timer = setTimeout(() => {
-      const wrapper = canvasWrapperRef.current;
-      if (!wrapper) {
+      const canvas = canvasRef.current;
+      if (!canvas) {
         clearPendingLocateStarId();
         return;
       }
 
-      const rect = wrapper.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       const anchorX = rect.left + percentToPixel(star.x, rect.width);
       const anchorY = rect.top + percentToPixel(star.y, rect.height);
 
@@ -74,8 +73,9 @@ export function StarMapPage() {
       </Box>
 
       <HStack align="stretch" spacing={4}>
-        <Box ref={canvasWrapperRef} position="relative" flex="1">
+        <Box position="relative" flex="1">
           <StarMapCanvas
+            ref={canvasRef}
             stars={stars}
             enclosures={enclosures}
             onStarClick={handleStarClick}
