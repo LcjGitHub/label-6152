@@ -10,6 +10,7 @@ import { StatisticsPage } from '@/pages/StatisticsPage';
 import { HistoryPage } from '@/pages/HistoryPage';
 import { ComparePage } from '@/pages/ComparePage';
 import { DictionaryPage } from '@/pages/DictionaryPage';
+import { HelpPage } from '@/pages/HelpPage';
 
 /**
  * 根路由组件
@@ -28,6 +29,7 @@ export function App() {
         <Route path="/历史" element={<HistoryPage />} />
         <Route path="/对照" element={<ComparePage />} />
         <Route path="/词典" element={<DictionaryPage />} />
+        <Route path="/帮助" element={<HelpPage />} />
       </Routes>
     </AppLayout>
   );

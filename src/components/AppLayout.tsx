@@ -31,6 +31,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     { path: '/词典', label: '词典' },
     { path: '/收藏', label: '我的收藏' },
     { path: '/历史', label: '历史' },
+    { path: '/帮助', label: '帮助' },
   ];
 
   const handleNavClick = (item: NavItem, e: React.MouseEvent) => {
