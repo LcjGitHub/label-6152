@@ -1,5 +1,7 @@
 import type { Star, StarHitArea, Enclosure } from '@/types/star';
 import { magnitudeToRadius, percentToPixel } from './starUtils';
+import type { ViewTransform } from './transformUtils';
+import { applyTransformToContext } from './transformUtils';
 
 export interface EnclosureRegion {
   x: number;
@@ -41,7 +43,13 @@ export function drawEnclosureRegions(
   height: number,
   fillColor: string,
   borderColor: string,
+  transform?: ViewTransform,
 ): void {
+  if (transform) {
+    ctx.save();
+    applyTransformToContext(ctx, transform);
+  }
+
   enclosures.forEach((enc) => {
     if (!visibleEnclosureIds.has(enc.id)) return;
     const region = ENCLOSURE_REGIONS[enc.id];
@@ -65,6 +73,10 @@ export function drawEnclosureRegions(
     ctx.textAlign = 'left';
     ctx.fillText(enc.name, rx + 10, ry + 22);
   });
+
+  if (transform) {
+    ctx.restore();
+  }
 }
 
 export function drawDecorativeDots(
@@ -72,7 +84,13 @@ export function drawDecorativeDots(
   width: number,
   height: number,
   count: number = DECORATIVE_DOT_COUNT,
+  transform?: ViewTransform,
 ): void {
+  if (transform) {
+    ctx.save();
+    applyTransformToContext(ctx, transform);
+  }
+
   ctx.fillStyle = 'rgba(255,255,255,0.15)';
   for (let i = 0; i < count; i++) {
     const sx = ((i * 137.508) % 100) / 100 * width;
@@ -81,6 +99,10 @@ export function drawDecorativeDots(
     ctx.beginPath();
     ctx.arc(sx, sy, sr, 0, Math.PI * 2);
     ctx.fill();
+  }
+
+  if (transform) {
+    ctx.restore();
   }
 }
 
@@ -141,8 +163,15 @@ export function drawStarsAndGetHitAreas(
   height: number,
   dotColor: string,
   highlightStarId?: string | null,
+  transform?: ViewTransform,
 ): StarHitArea[] {
   const hitAreas: StarHitArea[] = [];
+
+  if (transform) {
+    ctx.save();
+    applyTransformToContext(ctx, transform);
+  }
+
   stars.forEach((star) => {
     if (!visibleEnclosureIds.has(star.enclosureId)) return;
     const cx = percentToPixel(star.x, width);
@@ -157,6 +186,11 @@ export function drawStarsAndGetHitAreas(
 
     hitAreas.push({ star, cx, cy, radius: radius + 6 });
   });
+
+  if (transform) {
+    ctx.restore();
+  }
+
   return hitAreas;
 }
 

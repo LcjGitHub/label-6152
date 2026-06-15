@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Box, Heading, Text, VStack, HStack, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack, HStack, Checkbox, Flex, Button } from '@chakra-ui/react';
+import { ViewIcon } from '@chakra-ui/icons';
 import { useStarStore } from '@/store/starStore';
-import { StarMapCanvas } from '@/components/StarMapCanvas';
+import { StarMapCanvas, type StarMapCanvasHandle } from '@/components/StarMapCanvas';
 import { StarDetailPopover } from '@/components/StarDetailPopover';
 import { StarTooltip } from '@/components/StarTooltip';
 import { LegendPanel } from '@/components/LegendPanel';
@@ -24,7 +25,7 @@ export function StarMapPage() {
     enclosures.forEach((enc) => ids.add(enc.id));
     return ids;
   });
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<StarMapCanvasHandle>(null);
 
   const onlyOneLeft = useMemo(() => visibleEnclosureIds.size === 1, [visibleEnclosureIds]);
 
@@ -83,6 +84,10 @@ export function StarMapPage() {
     setAnchor(null);
   };
 
+  const handleResetView = useCallback(() => {
+    canvasRef.current?.resetView();
+  }, []);
+
   useEffect(() => {
     if (!pendingLocateStarId) return;
 
@@ -101,7 +106,7 @@ export function StarMapPage() {
     }
 
     const timer = setTimeout(() => {
-      const canvas = canvasRef.current;
+      const canvas = canvasRef.current?.getCanvas();
       if (!canvas) {
         clearPendingLocateStarId();
         return;
@@ -123,14 +128,25 @@ export function StarMapPage() {
 
   return (
     <VStack align="stretch" spacing={4}>
-      <Box>
-        <Heading size="lg" mb={2}>
-          简化星图
-        </Heading>
-        <Text color="gray.400" fontSize="sm">
-          Canvas 点阵示意三垣星官分布，坐标为 Mock 百分比位置，非真实天文数据。
-        </Text>
-      </Box>
+      <Flex justify="space-between" align="flex-start">
+        <Box>
+          <Heading size="lg" mb={2}>
+            简化星图
+          </Heading>
+          <Text color="gray.400" fontSize="sm">
+            Canvas 点阵示意三垣星官分布，坐标为 Mock 百分比位置，非真实天文数据。
+          </Text>
+        </Box>
+        <Button
+          leftIcon={<ViewIcon />}
+          size="sm"
+          variant="outline"
+          colorScheme="brand"
+          onClick={handleResetView}
+        >
+          重置视图
+        </Button>
+      </Flex>
 
       <Box role="group" aria-label="按垣域显示">
         <Flex gap={6} align="center" flexWrap="wrap">
