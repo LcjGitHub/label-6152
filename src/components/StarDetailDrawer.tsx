@@ -29,13 +29,13 @@ export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProp
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
       <DrawerOverlay />
       <DrawerContent bg="gray.900">
-        <DrawerCloseButton />
+        <DrawerCloseButton aria-label="关闭" />
         <DrawerHeader borderBottomWidth="1px" borderColor="whiteAlpha.200">
           <HStack justify="space-between">
             <Text fontSize="lg" fontWeight="bold">
               {star?.name ?? '星官详情'}
             </Text>
-            {star && <FavoriteButton starId={star.id} />}
+            {star && <FavoriteButton starId={star.id} starName={star.name} />}
           </HStack>
         </DrawerHeader>
         <DrawerBody>

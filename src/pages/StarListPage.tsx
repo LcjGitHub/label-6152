@@ -132,7 +132,7 @@ export function StarListPage() {
                         <Badge fontSize="xs" colorScheme="blue">
                           {star.magnitude} 等
                         </Badge>
-                        <FavoriteButton starId={star.id} size="sm" />
+                        <FavoriteButton starId={star.id} starName={star.name} size="sm" />
                       </HStack>
                     </HStack>
                     <Text fontSize="sm" color="gray.400" noOfLines={2}>

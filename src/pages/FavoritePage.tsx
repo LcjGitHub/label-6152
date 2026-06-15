@@ -36,6 +36,13 @@ export function FavoritePage() {
     return map;
   }, [favoriteStars, enclosures]);
 
+  const handleKeyDown = (e: React.KeyboardEvent, star: Star) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openDrawer(star);
+    }
+  };
+
   return (
     <VStack align="stretch" spacing={6}>
       <Box>
@@ -51,7 +58,7 @@ export function FavoritePage() {
             还没有收藏任何星官
           </Text>
           <Text color="gray.600" fontSize="sm" mt={2}>
-            去星官列表中点击 ☆ 按钮收藏喜欢的星官吧
+            去星官列表点击卡片右上角星形按钮收藏喜欢的星官吧
           </Text>
         </Box>
       ) : (
@@ -66,39 +73,53 @@ export function FavoritePage() {
                 <Badge colorScheme="yellow">{encStars.length}</Badge>
               </HStack>
               <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
-                {encStars.map((star) => (
-                  <Box
-                    key={star.id}
-                    p={4}
-                    borderRadius="md"
-                    bg="whiteAlpha.50"
-                    border="1px solid"
-                    borderColor="whiteAlpha.100"
-                    cursor="pointer"
-                    transition="all 0.15s"
-                    _hover={{
-                      bg: 'whiteAlpha.100',
-                      borderColor: 'brand.400',
-                      transform: 'translateY(-1px)',
-                    }}
-                    onClick={() => openDrawer(star)}
-                  >
-                    <HStack justify="space-between" mb={1}>
-                      <HStack gap={2}>
-                        <Text fontWeight="semibold">{star.name}</Text>
+                {encStars.map((star) => {
+                  const ariaLabel = `${star.name}，${star.summary}，${star.enclosure}，视星等${star.magnitude}，按回车键查看详情`;
+                  return (
+                    <Box
+                      key={star.id}
+                      as="article"
+                      role="button"
+                      tabIndex={0}
+                      p={4}
+                      borderRadius="md"
+                      bg="whiteAlpha.50"
+                      border="1px solid"
+                      borderColor="whiteAlpha.100"
+                      cursor="pointer"
+                      transition="all 0.15s"
+                      aria-label={ariaLabel}
+                      _hover={{
+                        bg: 'whiteAlpha.100',
+                        borderColor: 'brand.400',
+                        transform: 'translateY(-1px)',
+                      }}
+                      _focusVisible={{
+                        outline: '2px solid',
+                        outlineColor: 'brand.400',
+                        outlineOffset: '2px',
+                        bg: 'whiteAlpha.100',
+                      }}
+                      onClick={() => openDrawer(star)}
+                      onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e, star)}
+                    >
+                      <HStack justify="space-between" mb={1}>
+                        <HStack gap={2}>
+                          <Text fontWeight="semibold">{star.name}</Text>
+                        </HStack>
+                        <HStack gap={1}>
+                          <Badge fontSize="xs" colorScheme="blue">
+                            {star.magnitude} 等
+                          </Badge>
+                          <FavoriteButton starId={star.id} starName={star.name} size="sm" />
+                        </HStack>
                       </HStack>
-                      <HStack gap={1}>
-                        <Badge fontSize="xs" colorScheme="blue">
-                          {star.magnitude} 等
-                        </Badge>
-                        <FavoriteButton starId={star.id} size="sm" />
-                      </HStack>
-                    </HStack>
-                    <Text fontSize="sm" color="gray.400" noOfLines={2}>
-                      {star.summary}
-                    </Text>
-                  </Box>
-                ))}
+                      <Text fontSize="sm" color="gray.400" noOfLines={2}>
+                        {star.summary}
+                      </Text>
+                    </Box>
+                  );
+                })}
               </SimpleGrid>
             </Box>
           );
