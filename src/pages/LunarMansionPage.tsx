@@ -10,9 +10,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Tag,
-  TagLabel,
-  TagCloseButton,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useLunarMansionStore } from '@/store/lunarMansionStore';
@@ -50,15 +47,9 @@ function searchMansions(mansions: LunarMansion[], fuse: Fuse<LunarMansion>, quer
 export function LunarMansionPage() {
   const { groups, mansions, selectedMansion, drawerOpen, openDrawer, closeDrawer } = useLunarMansionStore();
   const [query, setQuery] = useState('');
-  const [filterDirection, setFilterDirection] = useState<string | null>(null);
 
   const fuse = useMemo(() => createMansionFuse(mansions), [mansions]);
-  const searchedMansions = useMemo(() => searchMansions(mansions, fuse, query), [mansions, fuse, query]);
-
-  const filteredMansions = useMemo(() => {
-    if (!filterDirection) return searchedMansions;
-    return searchedMansions.filter((m) => m.direction === filterDirection);
-  }, [searchedMansions, filterDirection]);
+  const filteredMansions = useMemo(() => searchMansions(mansions, fuse, query), [mansions, fuse, query]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, LunarMansion[]>();
@@ -70,20 +61,19 @@ export function LunarMansionPage() {
     return map;
   }, [filteredMansions, groups]);
 
-  const clearFilter = () => setFilterDirection(null);
+  const handleKeyDown = (e: React.KeyboardEvent, mansion: LunarMansion) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openDrawer(mansion);
+    }
+  };
 
   return (
     <VStack align="stretch" spacing={6}>
       <Box>
-        <HStack mb={2} spacing={3}>
-          <Heading size="lg">二十八宿名录</Heading>
-          {filterDirection && (
-            <Tag colorScheme={directionColors[filterDirection]} size="md">
-              <TagLabel>{directionSymbols[filterDirection]} {filterDirection}</TagLabel>
-              <TagCloseButton onClick={clearFilter} />
-            </Tag>
-          )}
-        </HStack>
+        <Heading size="lg" mb={2}>
+          二十八宿名录
+        </Heading>
         <Text color="gray.400" fontSize="sm">
           中国古代将黄道附近划分为二十八宿，分属东方苍龙、北方玄武、西方白虎、南方朱雀四象。点击条目查看详情。
         </Text>
@@ -123,42 +113,56 @@ export function LunarMansionPage() {
                 {group.description}
               </Text>
               <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
-                {groupMansions.map((mansion) => (
-                  <Box
-                    key={mansion.id}
-                    p={4}
-                    borderRadius="md"
-                    bg="whiteAlpha.50"
-                    border="1px solid"
-                    borderColor="whiteAlpha.100"
-                    cursor="pointer"
-                    transition="all 0.15s"
-                    _hover={{
-                      bg: 'whiteAlpha.100',
-                      borderColor: `${directionColors[mansion.direction]}.400`,
-                      transform: 'translateY(-1px)',
-                    }}
-                    onClick={() => openDrawer(mansion)}
-                  >
-                    <HStack justify="space-between" mb={1}>
-                      <HStack>
-                        <Text fontWeight="semibold">{mansion.name}</Text>
-                        <Badge fontSize="xs" colorScheme={directionColors[mansion.direction]}>
-                          第{mansion.order}宿
+                {groupMansions.map((mansion) => {
+                  const ariaLabel = `${mansion.name}，${mansion.direction}，${mansion.summary}，按回车键查看详情`;
+                  return (
+                    <Box
+                      key={mansion.id}
+                      as="article"
+                      role="button"
+                      tabIndex={0}
+                      p={4}
+                      borderRadius="md"
+                      bg="whiteAlpha.50"
+                      border="1px solid"
+                      borderColor="whiteAlpha.100"
+                      cursor="pointer"
+                      transition="all 0.15s"
+                      aria-label={ariaLabel}
+                      _hover={{
+                        bg: 'whiteAlpha.100',
+                        borderColor: `${directionColors[mansion.direction]}.400`,
+                        transform: 'translateY(-1px)',
+                      }}
+                      _focusVisible={{
+                        outline: '2px solid',
+                        outlineColor: `${directionColors[mansion.direction]}.400`,
+                        outlineOffset: '2px',
+                        bg: 'whiteAlpha.100',
+                      }}
+                      onClick={() => openDrawer(mansion)}
+                      onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e, mansion)}
+                    >
+                      <HStack justify="space-between" mb={1}>
+                        <HStack>
+                          <Text fontWeight="semibold">{mansion.name}</Text>
+                          <Badge fontSize="xs" colorScheme={directionColors[mansion.direction]}>
+                            第{mansion.order}宿
+                          </Badge>
+                        </HStack>
+                        <Badge fontSize="xs" colorScheme="purple" variant="outline">
+                          {mansion.symbol}
                         </Badge>
                       </HStack>
-                      <Badge fontSize="xs" colorScheme="purple" variant="outline">
-                        {mansion.symbol}
-                      </Badge>
-                    </HStack>
-                    <Text fontSize="xs" color="gray.500" mb={2}>
-                      {mansion.pinyin}
-                    </Text>
-                    <Text fontSize="sm" color="gray.400" noOfLines={2}>
-                      {mansion.summary}
-                    </Text>
-                  </Box>
-                ))}
+                      <Text fontSize="xs" color="gray.500" mb={2}>
+                        {mansion.pinyin}
+                      </Text>
+                      <Text fontSize="sm" color="gray.400" noOfLines={2}>
+                        {mansion.summary}
+                      </Text>
+                    </Box>
+                  );
+                })}
               </SimpleGrid>
             </Box>
           );
