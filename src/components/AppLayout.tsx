@@ -1,10 +1,11 @@
 import { Box, Flex, Heading, Link as ChakraLink, Spacer, Text } from '@chakra-ui/react';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { deleteSearchParam } from '@/utils/urlUtils';
 
 interface NavItem {
   path: string;
   label: string;
-  clearSearch?: boolean;
+  clearParams?: string[];
 }
 
 interface AppLayoutProps {
@@ -17,10 +18,11 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const navItems: NavItem[] = [
     { path: '/概览', label: '概览' },
-    { path: '/', label: '星官列表', clearSearch: true },
+    { path: '/', label: '星官列表', clearParams: ['enclosure'] },
     { path: '/二十八宿', label: '二十八宿' },
     { path: '/map', label: '简化星图' },
     { path: '/统计', label: '统计' },
@@ -28,9 +30,13 @@ export function AppLayout({ children }: AppLayoutProps) {
   ];
 
   const handleNavClick = (item: NavItem, e: React.MouseEvent) => {
-    if (item.clearSearch) {
+    if (item.clearParams && item.clearParams.length > 0) {
       e.preventDefault();
-      navigate({ pathname: item.path, search: '' });
+      let nextParams = new URLSearchParams(searchParams);
+      item.clearParams.forEach((param) => {
+        nextParams = deleteSearchParam(nextParams, param);
+      });
+      navigate({ pathname: item.path, search: nextParams.toString() });
     }
   };
 
