@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Box,
@@ -20,6 +20,7 @@ import {
 import { SearchIcon } from '@chakra-ui/icons';
 import { useStarStore } from '@/store/starStore';
 import { createStarFuse, searchStars, sortStars, SORT_OPTIONS, type SortBy } from '@/utils/starUtils';
+import { getSearchParam, setSearchParam, deleteSearchParam } from '@/utils/urlUtils';
 import { StarDetailDrawer } from '@/components/StarDetailDrawer';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import type { Star } from '@/types/star';
@@ -30,10 +31,18 @@ import type { Star } from '@/types/star';
 export function StarListPage() {
   const { stars, enclosures, selectedStar, drawerOpen, openDrawer, closeDrawer } = useStarStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState('');
+  const query = getSearchParam(searchParams, 'q');
   const [sortBy, setSortBy] = useState<SortBy>('default');
 
-  const filterEnclosureId = searchParams.get('enclosure');
+  const filterEnclosureId = getSearchParam(searchParams, 'enclosure', '') || null;
+
+  const setQuery = useCallback(
+    (value: string) => {
+      const nextParams = setSearchParam(searchParams, 'q', value);
+      setSearchParams(nextParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
   const fuse = useMemo(() => createStarFuse(stars), [stars]);
   const searchedStars = useMemo(() => searchStars(stars, fuse, query), [stars, fuse, query]);
@@ -50,7 +59,8 @@ export function StarListPage() {
   }, [enclosures, filterEnclosureId]);
 
   const clearFilter = () => {
-    setSearchParams({});
+    const nextParams = deleteSearchParam(searchParams, 'enclosure');
+    setSearchParams(nextParams, { replace: true });
   };
 
   const grouped = useMemo(() => {

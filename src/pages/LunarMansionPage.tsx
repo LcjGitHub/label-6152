@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Box,
   Heading,
@@ -15,7 +16,8 @@ import { SearchIcon } from '@chakra-ui/icons';
 import { useLunarMansionStore } from '@/store/lunarMansionStore';
 import { MansionDetailDrawer } from '@/components/MansionDetailDrawer';
 import type { LunarMansion } from '@/types/lunarMansion';
-import Fuse from 'fuse.js';
+import { createMansionFuse, searchMansions } from '@/utils/mansionUtils';
+import { getSearchParam, setSearchParam } from '@/utils/urlUtils';
 
 const directionColors: Record<string, string> = {
   '东方苍龙': 'green',
@@ -31,22 +33,18 @@ const directionSymbols: Record<string, string> = {
   '南方朱雀': '🐦',
 };
 
-function createMansionFuse(mansions: LunarMansion[]) {
-  return new Fuse(mansions, {
-    keys: ['name', 'pinyin', 'direction', 'summary', 'description', 'symbol'],
-    threshold: 0.3,
-    minMatchCharLength: 1,
-  });
-}
-
-function searchMansions(mansions: LunarMansion[], fuse: Fuse<LunarMansion>, query: string) {
-  if (!query.trim()) return mansions;
-  return fuse.search(query).map((r) => r.item);
-}
-
 export function LunarMansionPage() {
   const { groups, mansions, selectedMansion, drawerOpen, openDrawer, closeDrawer } = useLunarMansionStore();
-  const [query, setQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = getSearchParam(searchParams, 'q');
+
+  const setQuery = useCallback(
+    (value: string) => {
+      const nextParams = setSearchParam(searchParams, 'q', value);
+      setSearchParams(nextParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
   const fuse = useMemo(() => createMansionFuse(mansions), [mansions]);
   const filteredMansions = useMemo(() => searchMansions(mansions, fuse, query), [mansions, fuse, query]);
