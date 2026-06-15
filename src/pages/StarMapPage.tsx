@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Box, Heading, Text, VStack, HStack } from '@chakra-ui/react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Box, Heading, Text, VStack, HStack, Checkbox, Flex } from '@chakra-ui/react';
 import { useStarStore } from '@/store/starStore';
 import { StarMapCanvas } from '@/components/StarMapCanvas';
 import { StarDetailPopover } from '@/components/StarDetailPopover';
@@ -8,9 +8,12 @@ import { LegendPanel } from '@/components/LegendPanel';
 import { percentToPixel } from '@/utils/starUtils';
 import type { Star, PopoverAnchor } from '@/types/star';
 
-/**
- * 简化星图页
- */
+const ENCLOSURE_OPTIONS = [
+  { id: 'ziwei', name: '紫微垣' },
+  { id: 'taiwei', name: '太微垣' },
+  { id: 'tianshi', name: '天市垣' },
+] as const;
+
 export function StarMapPage() {
   const { stars, enclosures, pendingLocateStarId, clearPendingLocateStarId } = useStarStore();
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
@@ -19,7 +22,26 @@ export function StarMapPage() {
   const [highlightStarId, setHighlightStarId] = useState<string | null>(null);
   const [hoveredStar, setHoveredStar] = useState<Star | null>(null);
   const [hoverAnchor, setHoverAnchor] = useState<PopoverAnchor | null>(null);
+  const [visibleEnclosureIds, setVisibleEnclosureIds] = useState<Set<string>>(
+    new Set(ENCLOSURE_OPTIONS.map((e) => e.id)),
+  );
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const handleEnclosureToggle = useCallback(
+    (enclosureId: string) => {
+      setVisibleEnclosureIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(enclosureId)) {
+          if (next.size <= 1) return prev;
+          next.delete(enclosureId);
+        } else {
+          next.add(enclosureId);
+        }
+        return next;
+      });
+    },
+    [],
+  );
 
   const handleStarClick = (star: Star, anchorX: number, anchorY: number) => {
     setSelectedStar(star);
@@ -84,12 +106,28 @@ export function StarMapPage() {
         </Text>
       </Box>
 
+      <Flex gap={6} align="center" flexWrap="wrap">
+        {ENCLOSURE_OPTIONS.map((opt) => (
+          <Checkbox
+            key={opt.id}
+            isChecked={visibleEnclosureIds.has(opt.id)}
+            isDisabled={visibleEnclosureIds.size === 1 && visibleEnclosureIds.has(opt.id)}
+            onChange={() => handleEnclosureToggle(opt.id)}
+            colorScheme="brand"
+            sx={{ '.chakra-checkbox__label': { fontSize: 'sm' } }}
+          >
+            {opt.name}
+          </Checkbox>
+        ))}
+      </Flex>
+
       <HStack align="stretch" spacing={4}>
         <Box position="relative" flex="1">
           <StarMapCanvas
             ref={canvasRef}
             stars={stars}
             enclosures={enclosures}
+            visibleEnclosureIds={visibleEnclosureIds}
             onStarClick={handleStarClick}
             onStarHover={handleStarHover}
             highlightStarId={highlightStarId}

@@ -6,6 +6,7 @@ import { magnitudeToRadius, percentToPixel, hitTestStar } from '@/utils/starUtil
 interface StarMapCanvasProps {
   stars: Star[];
   enclosures: Enclosure[];
+  visibleEnclosureIds: Set<string>;
   onStarClick: (star: Star, anchorX: number, anchorY: number) => void;
   /** 鼠标悬停星点时的回调，star 为 null 表示移出 */
   onStarHover?: (star: Star | null, anchorX: number, anchorY: number) => void;
@@ -25,7 +26,7 @@ const ENCLOSURE_REGIONS: Record<string, { x: number; y: number; w: number; h: nu
  * 通过 forwardRef 暴露内部 canvas 元素，供父组件计算精确锚点
  */
 export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
-  function StarMapCanvas({ stars, enclosures, onStarClick, onStarHover, highlightStarId }, ref) {
+  function StarMapCanvas({ stars, enclosures, visibleEnclosureIds, onStarClick, onStarHover, highlightStarId }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasNodeRef = useRef<HTMLCanvasElement | null>(null);
     const hitAreasRef = useRef<StarHitArea[]>([]);
@@ -82,6 +83,7 @@ export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
 
       // 三垣区域
       enclosures.forEach((enc) => {
+        if (!visibleEnclosureIds.has(enc.id)) return;
         const region = ENCLOSURE_REGIONS[enc.id];
         if (!region) return;
 
@@ -119,6 +121,7 @@ export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
       // 星官星点
       const hitAreas: StarHitArea[] = [];
       stars.forEach((star) => {
+        if (!visibleEnclosureIds.has(star.enclosureId)) return;
         const cx = percentToPixel(star.x, width);
         const cy = percentToPixel(star.y, height);
         const radius = magnitudeToRadius(star.magnitude);
@@ -166,7 +169,7 @@ export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
       });
 
       hitAreasRef.current = hitAreas;
-    }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId]);
+    }, [stars, enclosures, visibleEnclosureIds, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId]);
 
     useEffect(() => {
       draw();
