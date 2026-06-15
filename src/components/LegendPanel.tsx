@@ -28,15 +28,16 @@ function EnclosureIcon() {
   ]);
 
   return (
-    <Box
-      w="36px"
-      h="24px"
-      borderRadius="md"
-      bg={enclosureFill}
-      border="1px solid"
-      borderColor={enclosureBorder}
-      flexShrink={0}
-    />
+    <Box w="80px" h="24px" flexShrink={0} display="flex" alignItems="center">
+      <Box
+        w="36px"
+        h="24px"
+        borderRadius="md"
+        bg={enclosureFill}
+        border="1px solid"
+        borderColor={enclosureBorder}
+      />
+    </Box>
   );
 }
 
@@ -56,7 +57,14 @@ function StarMagnitudeIcon() {
               borderRadius="full"
               bg={dotColor}
             />
-            <Text fontSize="8px" color="gray.400" lineHeight="1" mt="1px">
+            <Text
+              fontSize="10px"
+              color="gray.400"
+              lineHeight="1"
+              mt="1px"
+              aria-label={`视星等 ${mag}`}
+              role="img"
+            >
               {mag}
             </Text>
           </Flex>
@@ -80,19 +88,21 @@ function BackgroundDotsIcon() {
   ];
 
   return (
-    <Box w="36px" h="24px" position="relative" flexShrink={0}>
-      {dots.map((dot, i) => (
-        <Box
-          key={i}
-          position="absolute"
-          left={`${dot.x}px`}
-          top={`${dot.y}px`}
-          w={`${dot.r * 2}px`}
-          h={`${dot.r * 2}px`}
-          borderRadius="full"
-          bg="rgba(255,255,255,0.15)"
-        />
-      ))}
+    <Box w="80px" h="24px" flexShrink={0} display="flex" alignItems="center">
+      <Box w="36px" h="24px" position="relative">
+        {dots.map((dot, i) => (
+          <Box
+            key={i}
+            position="absolute"
+            left={`${dot.x}px`}
+            top={`${dot.y}px`}
+            w={`${dot.r * 2}px`}
+            h={`${dot.r * 2}px`}
+            borderRadius="full"
+            bg="rgba(255,255,255,0.15)"
+          />
+        ))}
+      </Box>
     </Box>
   );
 }
@@ -121,13 +131,7 @@ function LegendCategorySection({ category }: { category: LegendCategory }) {
 
   return (
     <Box>
-      <Flex
-        align="center"
-        cursor="pointer"
-        py={2}
-        onClick={() => setIsOpen(!isOpen)}
-        _hover={{ color: 'brand.200' }}
-      >
+      <Flex align="center" py={2}>
         <IconButton
           aria-label={isOpen ? `折叠${category.title}` : `展开${category.title}`}
           icon={isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
@@ -135,6 +139,8 @@ function LegendCategorySection({ category }: { category: LegendCategory }) {
           variant="ghost"
           colorScheme="whiteAlpha"
           mr={1}
+          onClick={() => setIsOpen(!isOpen)}
+          _hover={{ color: 'brand.200' }}
         />
         <CategoryIcon categoryId={category.id} />
         <Heading size="sm" ml={3} fontSize="sm" fontWeight="semibold">
@@ -201,8 +207,8 @@ export function LegendPanel({ defaultCollapsed = false }: LegendPanelProps) {
           图例说明
         </Button>
       ) : (
-        <Box p={4}>
-          <Flex align="center" justify="space-between" mb={3}>
+        <Box p={4} h="100%" display="flex" flexDirection="column">
+          <Flex align="center" justify="space-between" mb={3} flexShrink={0}>
             <Heading size="sm" fontSize="md">
               图例说明
             </Heading>
@@ -215,11 +221,13 @@ export function LegendPanel({ defaultCollapsed = false }: LegendPanelProps) {
               onClick={() => setIsCollapsed(true)}
             />
           </Flex>
-          <VStack align="stretch" spacing={2}>
-            {LEGEND_DATA.map((category) => (
-              <LegendCategorySection key={category.id} category={category} />
-            ))}
-          </VStack>
+          <Box overflowY="auto" flex="1" pr={1}>
+            <VStack align="stretch" spacing={2}>
+              {LEGEND_DATA.map((category) => (
+                <LegendCategorySection key={category.id} category={category} />
+              ))}
+            </VStack>
+          </Box>
         </Box>
       )}
     </Box>

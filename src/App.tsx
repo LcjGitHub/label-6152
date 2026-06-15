@@ -5,6 +5,7 @@ import { StarMapPage } from '@/pages/StarMapPage';
 import { OverviewPage } from '@/pages/OverviewPage';
 import { FavoritePage } from '@/pages/FavoritePage';
 import { LunarMansionPage } from '@/pages/LunarMansionPage';
+import { StatisticsPage } from '@/pages/StatisticsPage';
 
 /**
  * 根路由组件
@@ -17,6 +18,7 @@ export function App() {
         <Route path="/概览" element={<OverviewPage />} />
         <Route path="/二十八宿" element={<LunarMansionPage />} />
         <Route path="/map" element={<StarMapPage />} />
+        <Route path="/统计" element={<StatisticsPage />} />
         <Route path="/收藏" element={<FavoritePage />} />
       </Routes>
     </AppLayout>
