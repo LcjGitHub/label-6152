@@ -1,4 +1,5 @@
 import type { Star, Enclosure } from '@/types/star';
+import type { MansionGroup } from '@/types/lunarMansion';
 
 export interface EnclosureStat {
   id: string;
@@ -13,6 +14,12 @@ export interface MagnitudeRangeStat {
   count: number;
 }
 
+export interface MansionStat {
+  direction: string;
+  count: number;
+  starCount: number;
+}
+
 export interface StarStatistics {
   totalStars: number;
   enclosureStats: EnclosureStat[];
@@ -20,6 +27,12 @@ export interface StarStatistics {
   maxMagnitude: number;
   minMagnitude: number;
   avgMagnitude: number;
+}
+
+export interface MansionStatistics {
+  totalMansions: number;
+  totalStars: number;
+  mansionStats: MansionStat[];
 }
 
 const MAGNITUDE_RANGES = [
@@ -59,5 +72,22 @@ export function calculateStatistics(
     maxMagnitude,
     minMagnitude,
     avgMagnitude,
+  };
+}
+
+export function calculateMansionStatistics(groups: MansionGroup[]): MansionStatistics {
+  const mansionStats: MansionStat[] = groups.map((group) => ({
+    direction: group.direction,
+    count: group.mansions.length,
+    starCount: group.mansions.reduce((sum, m) => sum + m.stars.length, 0),
+  }));
+
+  const totalMansions = mansionStats.reduce((sum, m) => sum + m.count, 0);
+  const totalStars = mansionStats.reduce((sum, m) => sum + m.starCount, 0);
+
+  return {
+    totalMansions,
+    totalStars,
+    mansionStats,
   };
 }

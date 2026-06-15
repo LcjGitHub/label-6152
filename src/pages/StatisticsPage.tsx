@@ -1,17 +1,24 @@
 import { Box, Heading, Text, VStack, SimpleGrid, HStack, Stat, StatLabel, StatNumber, StatHelpText } from '@chakra-ui/react';
 import { useStarStore } from '@/store/starStore';
-import { calculateStatistics } from '@/utils/statistics';
+import { useLunarMansionStore } from '@/store/lunarMansionStore';
+import { calculateStatistics, calculateMansionStatistics } from '@/utils/statistics';
 import { useMemo } from 'react';
 
 export function StatisticsPage() {
   const { stars, enclosures } = useStarStore();
+  const { groups } = useLunarMansionStore();
 
   const stats = useMemo(() => {
     return calculateStatistics(stars, enclosures);
   }, [stars, enclosures]);
 
+  const mansionStats = useMemo(() => {
+    return calculateMansionStatistics(groups);
+  }, [groups]);
+
   const maxEnclosureCount = Math.max(...stats.enclosureStats.map((e) => e.count));
   const maxMagnitudeCount = Math.max(...stats.magnitudeStats.map((m) => m.count));
+  const maxMansionCount = Math.max(...mansionStats.mansionStats.map((m) => m.count));
 
   return (
     <VStack align="stretch" spacing={8}>
@@ -160,6 +167,99 @@ export function StatisticsPage() {
                 </Box>
                 <Text textAlign="center" fontSize="sm" color="gray.400">
                   {mag.range}
+                </Text>
+              </VStack>
+            );
+          })}
+        </SimpleGrid>
+      </Box>
+
+      <Box
+        p={6}
+        borderRadius="lg"
+        bg="whiteAlpha.50"
+        border="1px solid"
+        borderColor="whiteAlpha.100"
+      >
+        <Heading size="md" mb={6} fontFamily="heading">
+          二十八宿统计
+        </Heading>
+        <HStack mb={6} spacing={4} align="flex-end" justify="center">
+          <Stat
+            px={6}
+            py={4}
+            borderRadius="lg"
+            bg="whiteAlpha.50"
+            border="1px solid"
+            borderColor="whiteAlpha.100"
+          >
+            <StatLabel color="gray.400">星宿总数</StatLabel>
+            <StatNumber color="cyan.300" fontSize="2xl" fontFamily="heading">
+              {mansionStats.totalMansions}
+            </StatNumber>
+            <StatHelpText color="gray.500">四象总计</StatHelpText>
+          </Stat>
+          <Stat
+            px={6}
+            py={4}
+            borderRadius="lg"
+            bg="whiteAlpha.50"
+            border="1px solid"
+            borderColor="whiteAlpha.100"
+          >
+            <StatLabel color="gray.400">恒星总数</StatLabel>
+            <StatNumber color="cyan.300" fontSize="2xl" fontFamily="heading">
+              {mansionStats.totalStars}
+            </StatNumber>
+            <StatHelpText color="gray.500">二十八宿所属</StatHelpText>
+          </Stat>
+        </HStack>
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={4}>
+          {mansionStats.mansionStats.map((m) => {
+            const heightPercent = maxMansionCount > 0 ? (m.count / maxMansionCount) * 100 : 0;
+            return (
+              <VStack key={m.direction} spacing={3} align="stretch">
+                <Box
+                  w="full"
+                  h="120px"
+                  borderRadius="md"
+                  bg="whiteAlpha.100"
+                  position="relative"
+                  display="flex"
+                  alignItems="flex-end"
+                  overflow="hidden"
+                >
+                  <Box
+                    w="full"
+                    borderRadius="md"
+                    bgGradient="linear(to-t, cyan.500, cyan.300)"
+                    transition="height 0.5s ease-out"
+                    style={{ height: `${heightPercent}%` }}
+                  />
+                  <Text
+                    position="absolute"
+                    top="8px"
+                    left="50%"
+                    transform="translateX(-50%)"
+                    fontSize="sm"
+                    fontWeight="bold"
+                    color="white"
+                  >
+                    {m.count} 宿
+                  </Text>
+                  <Text
+                    position="absolute"
+                    top="28px"
+                    left="50%"
+                    transform="translateX(-50%)"
+                    fontSize="xs"
+                    color="gray.300"
+                  >
+                    {m.starCount} 星
+                  </Text>
+                </Box>
+                <Text textAlign="center" fontSize="sm" color="gray.200" fontWeight="medium">
+                  {m.direction}
                 </Text>
               </VStack>
             );
