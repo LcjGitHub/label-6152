@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Box,
+  Button,
   Flex,
   Heading,
   Text,
@@ -39,25 +40,26 @@ function EnclosureIcon() {
   );
 }
 
-/**
- * 星点大小示意图标
- */
 function StarMagnitudeIcon() {
   const [dotColor] = useToken('colors', ['star.dot']);
   const magnitudes = [1.5, 3, 4.5];
 
   return (
-    <Flex w="36px" h="24px" align="center" justify="space-around" flexShrink={0}>
+    <Flex w="80px" h="24px" align="flex-end" justify="space-around" flexShrink={0}>
       {magnitudes.map((mag, i) => {
         const radius = magnitudeToRadius(mag);
         return (
-          <Box
-            key={i}
-            w={`${radius * 2}px`}
-            h={`${radius * 2}px`}
-            borderRadius="full"
-            bg={dotColor}
-          />
+          <Flex key={i} direction="column" align="center">
+            <Box
+              w={`${radius * 2}px`}
+              h={`${radius * 2}px`}
+              borderRadius="full"
+              bg={dotColor}
+            />
+            <Text fontSize="8px" color="gray.400" lineHeight="1" mt="1px">
+              {mag}
+            </Text>
+          </Flex>
         );
       })}
     </Flex>
@@ -88,7 +90,7 @@ function BackgroundDotsIcon() {
           w={`${dot.r * 2}px`}
           h={`${dot.r * 2}px`}
           borderRadius="full"
-          bg="whiteAlpha.300"
+          bg="rgba(255,255,255,0.15)"
         />
       ))}
     </Box>
@@ -127,7 +129,7 @@ function LegendCategorySection({ category }: { category: LegendCategory }) {
         _hover={{ color: 'brand.200' }}
       >
         <IconButton
-          aria-label={isOpen ? '折叠' : '展开'}
+          aria-label={isOpen ? `折叠${category.title}` : `展开${category.title}`}
           icon={isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
           size="xs"
           variant="ghost"
@@ -141,6 +143,11 @@ function LegendCategorySection({ category }: { category: LegendCategory }) {
       </Flex>
       <Collapse in={isOpen}>
         <VStack align="stretch" pl={6} pt={2} pb={1} spacing={3}>
+          {category.intro && (
+            <Text fontSize="xs" color="gray.500" lineHeight="tall" fontStyle="italic">
+              {category.intro}
+            </Text>
+          )}
           {category.items.map((item) => (
             <Box key={item.id}>
               <Text fontSize="sm" fontWeight="medium" color="gray.200">
@@ -176,25 +183,23 @@ export function LegendPanel({ defaultCollapsed = false }: LegendPanelProps) {
       flexShrink={0}
     >
       {isCollapsed ? (
-        <Flex
-          direction="column"
-          align="center"
-          py={3}
-          h="full"
-          cursor="pointer"
+        <Button
           onClick={() => setIsCollapsed(false)}
-          title="图例说明"
+          aria-label="展开图例说明"
+          h="full"
+          w="full"
+          minH="120px"
+          variant="ghost"
+          colorScheme="whiteAlpha"
+          sx={{ writingMode: 'vertical-rl' }}
+          fontSize="sm"
+          color="gray.300"
+          letterSpacing="wider"
+          _hover={{ color: 'brand.200' }}
+          _focusVisible={{ outline: '2px solid', outlineColor: 'brand.300', outlineOffset: '2px' }}
         >
-          <Text
-            sx={{ writingMode: 'vertical-rl' }}
-            fontSize="sm"
-            color="gray.300"
-            letterSpacing="wider"
-            _hover={{ color: 'brand.200' }}
-          >
-            图例说明
-          </Text>
-        </Flex>
+          图例说明
+        </Button>
       ) : (
         <Box p={4}>
           <Flex align="center" justify="space-between" mb={3}>

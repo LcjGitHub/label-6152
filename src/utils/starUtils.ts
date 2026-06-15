@@ -10,6 +10,7 @@ export interface LegendItem {
 export interface LegendCategory {
   id: string;
   title: string;
+  intro?: string;
   items: LegendItem[];
 }
 
@@ -17,6 +18,7 @@ export const LEGEND_DATA: LegendCategory[] = [
   {
     id: 'enclosures',
     title: '三垣区域',
+    intro: '画布中的半透明矩形与边框代表三垣天区的范围示意，并非精确的天区边界。',
     items: [
       {
         id: 'ziwei',
