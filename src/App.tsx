@@ -8,6 +8,7 @@ import { LunarMansionPage } from '@/pages/LunarMansionPage';
 import { StatisticsPage } from '@/pages/StatisticsPage';
 import { HistoryPage } from '@/pages/HistoryPage';
 import { ComparePage } from '@/pages/ComparePage';
+import { DictionaryPage } from '@/pages/DictionaryPage';
 
 /**
  * 根路由组件
@@ -24,6 +25,7 @@ export function App() {
         <Route path="/收藏" element={<FavoritePage />} />
         <Route path="/历史" element={<HistoryPage />} />
         <Route path="/对照" element={<ComparePage />} />
+        <Route path="/词典" element={<DictionaryPage />} />
       </Routes>
     </AppLayout>
   );
