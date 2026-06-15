@@ -12,6 +12,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import type { Star } from '@/types/star';
 
 interface StarDetailDrawerProps {
@@ -30,7 +31,12 @@ export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProp
       <DrawerContent bg="gray.900">
         <DrawerCloseButton />
         <DrawerHeader borderBottomWidth="1px" borderColor="whiteAlpha.200">
-          {star?.name ?? '星官详情'}
+          <HStack justify="space-between">
+            <Text fontSize="lg" fontWeight="bold">
+              {star?.name ?? '星官详情'}
+            </Text>
+            {star && <FavoriteButton starId={star.id} />}
+          </HStack>
         </DrawerHeader>
         <DrawerBody>
           {star && (

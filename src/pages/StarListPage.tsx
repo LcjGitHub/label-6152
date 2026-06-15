@@ -19,6 +19,7 @@ import { SearchIcon } from '@chakra-ui/icons';
 import { useStarStore } from '@/store/starStore';
 import { createStarFuse, searchStars } from '@/utils/starUtils';
 import { StarDetailDrawer } from '@/components/StarDetailDrawer';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import type { Star } from '@/types/star';
 
 /**
@@ -127,9 +128,12 @@ export function StarListPage() {
                   >
                     <HStack justify="space-between" mb={1}>
                       <Text fontWeight="semibold">{star.name}</Text>
-                      <Badge fontSize="xs" colorScheme="blue">
-                        {star.magnitude} 等
-                      </Badge>
+                      <HStack gap={1}>
+                        <Badge fontSize="xs" colorScheme="blue">
+                          {star.magnitude} 等
+                        </Badge>
+                        <FavoriteButton starId={star.id} size="sm" />
+                      </HStack>
                     </HStack>
                     <Text fontSize="sm" color="gray.400" noOfLines={2}>
                       {star.summary}
