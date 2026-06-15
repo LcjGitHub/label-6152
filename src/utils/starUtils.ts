@@ -99,6 +99,11 @@ export function searchStars(stars: Star[], fuse: Fuse<Star>, query: string): Sta
   return fuse.search(trimmed).map((result) => result.item);
 }
 
+/**
+ * 对星官列表按指定方式排序
+ * @param stars - 待排序的星官列表
+ * @param sortBy - 排序方式：default 保持原序，magnitude-asc 由亮到暗，magnitude-desc 由暗到亮
+ */
 export function sortStars(stars: Star[], sortBy: SortBy): Star[] {
   const copy = [...stars];
   switch (sortBy) {

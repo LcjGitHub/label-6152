@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Box,
+  Flex,
   Heading,
   Input,
   InputGroup,
@@ -79,8 +80,8 @@ export function StarListPage() {
         </Text>
       </Box>
 
-      <HStack spacing={3}>
-        <InputGroup maxW="400px" flex={1}>
+      <Flex gap={3} wrap="wrap">
+        <InputGroup maxW="400px" minW="200px" flex={{ base: '1 1 100%', md: '1 1 auto' }}>
           <InputLeftElement pointerEvents="none">
             <SearchIcon color="gray.500" />
           </InputLeftElement>
@@ -94,9 +95,11 @@ export function StarListPage() {
           />
         </InputGroup>
         <Select
+          aria-label="排序方式"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortBy)}
           maxW="220px"
+          flex={{ base: '1 1 100%', md: '0 0 auto' }}
           bg="whiteAlpha.100"
           border="none"
           _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
@@ -107,7 +110,7 @@ export function StarListPage() {
             </option>
           ))}
         </Select>
-      </HStack>
+      </Flex>
 
       {filteredStars.length === 0 ? (
         <Text color="gray.500" py={8} textAlign="center">
