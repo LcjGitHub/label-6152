@@ -9,6 +9,15 @@ export const SORT_OPTIONS: { value: SortBy; label: string }[] = [
   { value: 'magnitude-desc', label: '视星等由暗到亮' },
 ];
 
+export type MagnitudeFilter = 'all' | 'bright-1' | 'mid-2-3' | 'dim-3';
+
+export const MAGNITUDE_FILTER_OPTIONS: { value: MagnitudeFilter; label: string }[] = [
+  { value: 'all', label: '全部' },
+  { value: 'bright-1', label: '一等及更亮' },
+  { value: 'mid-2-3', label: '二至三等' },
+  { value: 'dim-3', label: '三等及更暗' },
+];
+
 export interface LegendItem {
   id: string;
   title: string;
@@ -113,6 +122,24 @@ export function sortStars(stars: Star[], sortBy: SortBy): Star[] {
       return copy.sort((a, b) => b.magnitude - a.magnitude);
     default:
       return copy;
+  }
+}
+
+/**
+ * 按视星等区间筛选星官列表
+ * @param stars - 待筛选的星官列表
+ * @param filter - 筛选区间
+ */
+export function filterStarsByMagnitude(stars: Star[], filter: MagnitudeFilter): Star[] {
+  switch (filter) {
+    case 'bright-1':
+      return stars.filter((star) => star.magnitude < 2.0);
+    case 'mid-2-3':
+      return stars.filter((star) => star.magnitude >= 2.0 && star.magnitude < 3.0);
+    case 'dim-3':
+      return stars.filter((star) => star.magnitude >= 3.0);
+    default:
+      return stars;
   }
 }
 

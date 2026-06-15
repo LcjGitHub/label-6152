@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useStarStore } from '@/store/starStore';
-import { createStarFuse, searchStars, sortStars, SORT_OPTIONS, type SortBy } from '@/utils/starUtils';
+import { createStarFuse, searchStars, sortStars, SORT_OPTIONS, type SortBy, filterStarsByMagnitude, MAGNITUDE_FILTER_OPTIONS, type MagnitudeFilter } from '@/utils/starUtils';
 import { getSearchParam, setSearchParam, deleteSearchParam } from '@/utils/urlUtils';
 import { StarDetailDrawer } from '@/components/StarDetailDrawer';
 import { FavoriteButton } from '@/components/FavoriteButton';
@@ -33,6 +33,7 @@ export function StarListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = getSearchParam(searchParams, 'q');
   const [sortBy, setSortBy] = useState<SortBy>('default');
+  const [magnitudeFilter, setMagnitudeFilter] = useState<MagnitudeFilter>('all');
 
   const filterEnclosureId = getSearchParam(searchParams, 'enclosure', '') || null;
 
@@ -46,7 +47,11 @@ export function StarListPage() {
 
   const fuse = useMemo(() => createStarFuse(stars), [stars]);
   const searchedStars = useMemo(() => searchStars(stars, fuse, query), [stars, fuse, query]);
-  const sortedStars = useMemo(() => sortStars(searchedStars, sortBy), [searchedStars, sortBy]);
+  const magnitudeFilteredStars = useMemo(
+    () => filterStarsByMagnitude(searchedStars, magnitudeFilter),
+    [searchedStars, magnitudeFilter],
+  );
+  const sortedStars = useMemo(() => sortStars(magnitudeFilteredStars, sortBy), [magnitudeFilteredStars, sortBy]);
 
   const filteredStars = useMemo(() => {
     if (!filterEnclosureId) return sortedStars;
@@ -104,6 +109,22 @@ export function StarListPage() {
             _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
           />
         </InputGroup>
+        <Select
+          aria-label="视星等区间"
+          value={magnitudeFilter}
+          onChange={(e) => setMagnitudeFilter(e.target.value as MagnitudeFilter)}
+          maxW="220px"
+          flex={{ base: '1 1 100%', md: '0 0 auto' }}
+          bg="whiteAlpha.100"
+          border="none"
+          _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
+        >
+          {MAGNITUDE_FILTER_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
         <Select
           aria-label="排序方式"
           value={sortBy}
