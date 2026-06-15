@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Box,
@@ -36,6 +36,15 @@ export function StarListPage() {
   const [magnitudeFilter, setMagnitudeFilter] = useState<MagnitudeFilter>('all');
 
   const filterEnclosureId = getSearchParam(searchParams, 'enclosure', '') || null;
+  const openStarId = getSearchParam(searchParams, 'star', '') || null;
+
+  useEffect(() => {
+    if (!openStarId) return;
+    const target = stars.find((s) => s.id === openStarId);
+    if (target) {
+      openDrawer(target);
+    }
+  }, [openStarId, stars, openDrawer]);
 
   const setQuery = useCallback(
     (value: string) => {

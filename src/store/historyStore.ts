@@ -7,10 +7,14 @@ export interface HistoryItem {
   visitedAt: number;
 }
 
+const MAX_HISTORY_ITEMS = 50;
+const DEFAULT_RECENT_COUNT = 5;
+
 interface HistoryState {
   historyItems: HistoryItem[];
   addHistory: (star: Star) => void;
   clearHistory: () => void;
+  getRecentHistory: (count?: number) => HistoryItem[];
 }
 
 export const useHistoryStore = create<HistoryState>()(
@@ -19,12 +23,16 @@ export const useHistoryStore = create<HistoryState>()(
       historyItems: [],
       addHistory: (star) => {
         const existing = get().historyItems.filter((item) => item.star.id !== star.id);
+        const newItems = [{ star, visitedAt: Date.now() }, ...existing].slice(0, MAX_HISTORY_ITEMS);
         set({
-          historyItems: [{ star, visitedAt: Date.now() }, ...existing],
+          historyItems: newItems,
         });
       },
       clearHistory: () => {
         set({ historyItems: [] });
+      },
+      getRecentHistory: (count = DEFAULT_RECENT_COUNT) => {
+        return get().historyItems.slice(0, count);
       },
     }),
     {
