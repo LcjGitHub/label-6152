@@ -27,6 +27,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     { path: '/map', label: '简化星图' },
     { path: '/统计', label: '统计' },
     { path: '/收藏', label: '我的收藏' },
+    { path: '/历史', label: '历史' },
   ];
 
   const handleNavClick = (item: NavItem, e: React.MouseEvent) => {

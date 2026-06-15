@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   Badge,
   Box,
@@ -16,6 +17,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { useStarStore } from '@/store/starStore';
+import { useHistoryStore } from '@/store/historyStore';
 import type { Star } from '@/types/star';
 
 interface StarDetailDrawerProps {
@@ -30,6 +32,13 @@ interface StarDetailDrawerProps {
 export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProps) {
   const navigate = useNavigate();
   const { setPendingLocateStarId } = useStarStore();
+  const { addHistory } = useHistoryStore();
+
+  useEffect(() => {
+    if (isOpen && star) {
+      addHistory(star);
+    }
+  }, [isOpen, star, addHistory]);
 
   const handleViewInMap = () => {
     if (!star) return;
