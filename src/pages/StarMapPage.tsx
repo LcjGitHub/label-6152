@@ -101,7 +101,7 @@ export function StarMapPage() {
             onClose={handleClosePopover}
           />
           <StarTooltip
-            star={hoveredStar}
+            star={popoverOpen && hoveredStar?.id === selectedStar?.id ? null : hoveredStar}
             anchor={hoverAnchor}
           />
         </Box>

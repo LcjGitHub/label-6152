@@ -1,4 +1,4 @@
-import { Badge, Box, HStack, Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import type { Star, PopoverAnchor } from '@/types/star';
 
 interface StarTooltipProps {
@@ -8,12 +8,12 @@ interface StarTooltipProps {
 
 /**
  * 星官悬停提示小气泡
- * 鼠标移到星点附近时显示星官名称和所属垣，移出后消失
+ * 鼠标移到星点附近时显示星官名称，移出后消失
  */
 export function StarTooltip({ star, anchor }: StarTooltipProps) {
   if (!star || !anchor) return null;
 
-  const tooltipWidth = 160;
+  const tooltipWidth = 100;
   const offsetX = 14;
   const offsetY = -10;
 
@@ -29,6 +29,8 @@ export function StarTooltip({ star, anchor }: StarTooltipProps) {
 
   return (
     <Box
+      role="tooltip"
+      aria-label={`悬停星官：${star.name}`}
       position="fixed"
       left={`${left}px`}
       top={`${top}px`}
@@ -39,20 +41,14 @@ export function StarTooltip({ star, anchor }: StarTooltipProps) {
       borderRadius="md"
       boxShadow="lg"
       zIndex={20}
-      p={2.5}
+      px={2.5}
+      py={1.5}
       pointerEvents="none"
+      textAlign="center"
     >
-      <Text fontWeight="bold" fontSize="sm" mb={1.5}>
+      <Text fontWeight="bold" fontSize="sm" noOfLines={1}>
         {star.name}
       </Text>
-      <HStack spacing={1.5}>
-        <Badge colorScheme="purple" fontSize="xs">
-          {star.enclosure}
-        </Badge>
-        <Text fontSize="xs" color="gray.400">
-          视星等 {star.magnitude}
-        </Text>
-      </HStack>
     </Box>
   );
 }

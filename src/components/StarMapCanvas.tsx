@@ -162,21 +162,11 @@ export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
           ctx.fill();
         }
 
-        // 悬停高亮
-        if (hoveredStarId && star.id === hoveredStarId) {
-          const hvRadius = radius + 8;
-          ctx.strokeStyle = 'rgba(255, 245, 157, 0.85)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(cx, cy, hvRadius, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-
         hitAreas.push({ star, cx, cy, radius: radius + 6 });
       });
 
       hitAreasRef.current = hitAreas;
-    }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId, hoveredStarId]);
+    }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId]);
 
     useEffect(() => {
       draw();
