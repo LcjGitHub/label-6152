@@ -7,6 +7,8 @@ interface StarMapCanvasProps {
   stars: Star[];
   enclosures: Enclosure[];
   onStarClick: (star: Star, anchorX: number, anchorY: number) => void;
+  /** 需要高亮定位的星官 ID */
+  highlightStarId?: string | null;
 }
 
 /** 三垣示意区域（百分比） */
@@ -19,7 +21,7 @@ const ENCLOSURE_REGIONS: Record<string, { x: number; y: number; w: number; h: nu
 /**
  * Canvas 点阵示意星图
  */
-export function StarMapCanvas({ stars, enclosures, onStarClick }: StarMapCanvasProps) {
+export function StarMapCanvas({ stars, enclosures, onStarClick, highlightStarId }: StarMapCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const hitAreasRef = useRef<StarHitArea[]>([]);
@@ -122,11 +124,29 @@ export function StarMapCanvas({ stars, enclosures, onStarClick }: StarMapCanvasP
       ctx.textAlign = 'center';
       ctx.fillText(star.name, cx, cy + radius + 14);
 
+      // 高亮定位环
+      if (highlightStarId && star.id === highlightStarId) {
+        const hlRadius = radius + 12;
+        ctx.strokeStyle = 'rgba(159, 122, 234, 0.9)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, hlRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const hlGlow = ctx.createRadialGradient(cx, cy, radius, cx, cy, hlRadius + 8);
+        hlGlow.addColorStop(0, 'rgba(159, 122, 234, 0.35)');
+        hlGlow.addColorStop(1, 'rgba(159, 122, 234, 0)');
+        ctx.fillStyle = hlGlow;
+        ctx.beginPath();
+        ctx.arc(cx, cy, hlRadius + 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
       hitAreas.push({ star, cx, cy, radius: radius + 6 });
     });
 
     hitAreasRef.current = hitAreas;
-  }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder]);
+  }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId]);
 
   useEffect(() => {
     draw();

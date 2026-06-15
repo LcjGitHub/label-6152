@@ -1,34 +1,66 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Heading, Text, VStack, HStack } from '@chakra-ui/react';
 import { useStarStore } from '@/store/starStore';
 import { StarMapCanvas } from '@/components/StarMapCanvas';
 import { StarDetailPopover } from '@/components/StarDetailPopover';
 import { LegendPanel } from '@/components/LegendPanel';
+import { percentToPixel } from '@/utils/starUtils';
 import type { Star, PopoverAnchor } from '@/types/star';
 
 /**
  * 简化星图页
  */
 export function StarMapPage() {
-  const { stars, enclosures } = useStarStore();
+  const { stars, enclosures, pendingLocateStarId, clearPendingLocateStarId } = useStarStore();
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
   const [anchor, setAnchor] = useState<PopoverAnchor | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [highlightStarId, setHighlightStarId] = useState<string | null>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * 星点点击回调
-   */
   const handleStarClick = (star: Star, anchorX: number, anchorY: number) => {
     setSelectedStar(star);
     setAnchor({ x: anchorX, y: anchorY });
     setPopoverOpen(true);
+    setHighlightStarId(star.id);
   };
 
   const handleClosePopover = () => {
     setPopoverOpen(false);
     setSelectedStar(null);
     setAnchor(null);
+    setHighlightStarId(null);
   };
+
+  useEffect(() => {
+    if (!pendingLocateStarId) return;
+
+    const star = stars.find((s) => s.id === pendingLocateStarId);
+    if (!star) {
+      clearPendingLocateStarId();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const wrapper = canvasWrapperRef.current;
+      if (!wrapper) {
+        clearPendingLocateStarId();
+        return;
+      }
+
+      const rect = wrapper.getBoundingClientRect();
+      const anchorX = rect.left + percentToPixel(star.x, rect.width);
+      const anchorY = rect.top + percentToPixel(star.y, rect.height);
+
+      setSelectedStar(star);
+      setAnchor({ x: anchorX, y: anchorY });
+      setPopoverOpen(true);
+      setHighlightStarId(star.id);
+      clearPendingLocateStarId();
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [pendingLocateStarId, stars, clearPendingLocateStarId]);
 
   return (
     <VStack align="stretch" spacing={4}>
@@ -42,8 +74,13 @@ export function StarMapPage() {
       </Box>
 
       <HStack align="stretch" spacing={4}>
-        <Box position="relative" flex="1">
-          <StarMapCanvas stars={stars} enclosures={enclosures} onStarClick={handleStarClick} />
+        <Box ref={canvasWrapperRef} position="relative" flex="1">
+          <StarMapCanvas
+            stars={stars}
+            enclosures={enclosures}
+            onStarClick={handleStarClick}
+            highlightStarId={highlightStarId}
+          />
           <StarDetailPopover
             star={selectedStar}
             anchor={anchor}

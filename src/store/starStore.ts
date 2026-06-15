@@ -11,9 +11,13 @@ interface StarState {
   selectedStar: Star | null;
   /** 列表页 Drawer 是否打开 */
   drawerOpen: boolean;
+  /** 待定位星官 ID（从列表页跳转星图页时设置，星图页消费后清空） */
+  pendingLocateStarId: string | null;
   selectStar: (star: Star | null) => void;
   openDrawer: (star: Star) => void;
   closeDrawer: () => void;
+  setPendingLocateStarId: (id: string | null) => void;
+  clearPendingLocateStarId: () => void;
   getStarsByEnclosure: (enclosureId: string) => Star[];
   getStarCountByEnclosure: (enclosureId: string) => number;
 }
@@ -26,9 +30,12 @@ export const useStarStore = create<StarState>((set, get) => ({
   enclosures: catalog.enclosures,
   selectedStar: null,
   drawerOpen: false,
+  pendingLocateStarId: null,
   selectStar: (star) => set({ selectedStar: star }),
   openDrawer: (star) => set({ selectedStar: star, drawerOpen: true }),
   closeDrawer: () => set({ drawerOpen: false }),
+  setPendingLocateStarId: (id) => set({ pendingLocateStarId: id }),
+  clearPendingLocateStarId: () => set({ pendingLocateStarId: null }),
   getStarsByEnclosure: (enclosureId) => {
     return get().stars.filter((star) => star.enclosureId === enclosureId);
   },

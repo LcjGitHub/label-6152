@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -12,7 +13,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { FavoriteButton } from '@/components/FavoriteButton';
+import { useStarStore } from '@/store/starStore';
 import type { Star } from '@/types/star';
 
 interface StarDetailDrawerProps {
@@ -25,6 +28,16 @@ interface StarDetailDrawerProps {
  * 星官详情 Drawer（列表页使用）
  */
 export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProps) {
+  const navigate = useNavigate();
+  const { setPendingLocateStarId } = useStarStore();
+
+  const handleViewInMap = () => {
+    if (!star) return;
+    setPendingLocateStarId(star.id);
+    onClose();
+    navigate('/map');
+  };
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
       <DrawerOverlay />
@@ -59,6 +72,9 @@ export function StarDetailDrawer({ star, isOpen, onClose }: StarDetailDrawerProp
                   示意位置：{star.x}% × {star.y}%
                 </Text>
               </Box>
+              <Button colorScheme="purple" variant="outline" onClick={handleViewInMap}>
+                在星图中查看
+              </Button>
             </VStack>
           )}
         </DrawerBody>
