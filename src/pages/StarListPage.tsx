@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Box,
   Heading,
@@ -24,17 +25,11 @@ import type { Star } from '@/types/star';
  * 星官列表与搜索页
  */
 export function StarListPage() {
-  const {
-    stars,
-    enclosures,
-    selectedStar,
-    drawerOpen,
-    openDrawer,
-    closeDrawer,
-    filterEnclosureId,
-    setFilterEnclosureId,
-  } = useStarStore();
+  const { stars, enclosures, selectedStar, drawerOpen, openDrawer, closeDrawer } = useStarStore();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
+
+  const filterEnclosureId = searchParams.get('enclosure');
 
   const fuse = useMemo(() => createStarFuse(stars), [stars]);
   const searchedStars = useMemo(() => searchStars(stars, fuse, query), [stars, fuse, query]);
@@ -48,6 +43,10 @@ export function StarListPage() {
     if (!filterEnclosureId) return null;
     return enclosures.find((enc) => enc.id === filterEnclosureId) ?? null;
   }, [enclosures, filterEnclosureId]);
+
+  const clearFilter = () => {
+    setSearchParams({});
+  };
 
   const grouped = useMemo(() => {
     const map = new Map<string, Star[]>();
@@ -67,7 +66,7 @@ export function StarListPage() {
           {currentEnclosure && (
             <Tag colorScheme="purple" size="md">
               <TagLabel>{currentEnclosure.name}</TagLabel>
-              <TagCloseButton onClick={() => setFilterEnclosureId(null)} />
+              <TagCloseButton onClick={clearFilter} />
             </Tag>
           )}
         </HStack>

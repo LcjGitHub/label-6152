@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { Box, Heading, Text, VStack, SimpleGrid, Badge, HStack } from '@chakra-ui/react';
 import { useStarStore } from '@/store/starStore';
 import type { Enclosure } from '@/types/star';
@@ -8,11 +8,20 @@ import type { Enclosure } from '@/types/star';
  */
 export function OverviewPage() {
   const navigate = useNavigate();
-  const { enclosures, getStarCountByEnclosure, setFilterEnclosureId } = useStarStore();
+  const { enclosures, getStarCountByEnclosure } = useStarStore();
 
   const handleCardClick = (enclosure: Enclosure) => {
-    setFilterEnclosureId(enclosure.id);
-    navigate('/');
+    navigate({
+      pathname: '/',
+      search: createSearchParams({ enclosure: enclosure.id }).toString(),
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, enclosure: Enclosure) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardClick(enclosure);
+    }
   };
 
   return (
@@ -29,9 +38,13 @@ export function OverviewPage() {
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
         {enclosures.map((enc) => {
           const count = getStarCountByEnclosure(enc.id);
+          const ariaLabel = `${enc.name}，${enc.description}，共${count}个星官，点击查看详情`;
           return (
             <Box
               key={enc.id}
+              as="article"
+              role="button"
+              tabIndex={0}
               p={6}
               borderRadius="lg"
               bg="whiteAlpha.50"
@@ -39,13 +52,21 @@ export function OverviewPage() {
               borderColor="whiteAlpha.100"
               cursor="pointer"
               transition="all 0.2s"
+              aria-label={ariaLabel}
               _hover={{
                 bg: 'whiteAlpha.100',
                 borderColor: 'brand.400',
                 transform: 'translateY(-2px)',
                 boxShadow: '0 4px 20px rgba(63, 81, 181, 0.2)',
               }}
+              _focusVisible={{
+                outline: '2px solid',
+                outlineColor: 'brand.400',
+                outlineOffset: '2px',
+                bg: 'whiteAlpha.100',
+              }}
               onClick={() => handleCardClick(enc)}
+              onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e, enc)}
             >
               <VStack align="stretch" spacing={4}>
                 <HStack justify="space-between">

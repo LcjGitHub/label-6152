@@ -1,5 +1,11 @@
 import { Box, Flex, Heading, Link as ChakraLink, Spacer, Text } from '@chakra-ui/react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+
+interface NavItem {
+  path: string;
+  label: string;
+  clearSearch?: boolean;
+}
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -10,12 +16,20 @@ interface AppLayoutProps {
  */
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const navItems = [
-    { path: '/overview', label: '概览' },
-    { path: '/', label: '星官列表' },
+  const navItems: NavItem[] = [
+    { path: '/概览', label: '概览' },
+    { path: '/', label: '星官列表', clearSearch: true },
     { path: '/map', label: '简化星图' },
   ];
+
+  const handleNavClick = (item: NavItem, e: React.MouseEvent) => {
+    if (item.clearSearch) {
+      e.preventDefault();
+      navigate({ pathname: item.path, search: '' });
+    }
+  };
 
   return (
     <Flex direction="column" minH="100vh">
@@ -43,6 +57,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   fontWeight={isActive ? 'bold' : 'normal'}
                   color={isActive ? 'brand.200' : 'gray.400'}
                   _hover={{ color: 'brand.100', textDecoration: 'none' }}
+                  onClick={(e) => handleNavClick(item, e)}
                 >
                   {item.label}
                 </ChakraLink>

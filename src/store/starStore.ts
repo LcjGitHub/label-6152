@@ -11,12 +11,9 @@ interface StarState {
   selectedStar: Star | null;
   /** 列表页 Drawer 是否打开 */
   drawerOpen: boolean;
-  /** 当前选中的垣域 ID，用于筛选 */
-  filterEnclosureId: string | null;
   selectStar: (star: Star | null) => void;
   openDrawer: (star: Star) => void;
   closeDrawer: () => void;
-  setFilterEnclosureId: (id: string | null) => void;
   getStarsByEnclosure: (enclosureId: string) => Star[];
   getStarCountByEnclosure: (enclosureId: string) => number;
 }
@@ -29,11 +26,9 @@ export const useStarStore = create<StarState>((set, get) => ({
   enclosures: catalog.enclosures,
   selectedStar: null,
   drawerOpen: false,
-  filterEnclosureId: null,
   selectStar: (star) => set({ selectedStar: star }),
   openDrawer: (star) => set({ selectedStar: star, drawerOpen: true }),
   closeDrawer: () => set({ drawerOpen: false }),
-  setFilterEnclosureId: (id) => set({ filterEnclosureId: id }),
   getStarsByEnclosure: (enclosureId) => {
     return get().stars.filter((star) => star.enclosureId === enclosureId);
   },

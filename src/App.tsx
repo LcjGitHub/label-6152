@@ -12,7 +12,7 @@ export function App() {
     <AppLayout>
       <Routes>
         <Route path="/" element={<StarListPage />} />
-        <Route path="/overview" element={<OverviewPage />} />
+        <Route path="/概览" element={<OverviewPage />} />
         <Route path="/map" element={<StarMapPage />} />
       </Routes>
     </AppLayout>
