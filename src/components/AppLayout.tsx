@@ -12,6 +12,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
 
   const navItems = [
+    { path: '/overview', label: '概览' },
     { path: '/', label: '星官列表' },
     { path: '/map', label: '简化星图' },
   ];

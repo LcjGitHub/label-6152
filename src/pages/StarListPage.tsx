@@ -10,6 +10,9 @@ import {
   VStack,
   Badge,
   HStack,
+  Tag,
+  TagLabel,
+  TagCloseButton,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useStarStore } from '@/store/starStore';
@@ -21,11 +24,30 @@ import type { Star } from '@/types/star';
  * 星官列表与搜索页
  */
 export function StarListPage() {
-  const { stars, enclosures, selectedStar, drawerOpen, openDrawer, closeDrawer } = useStarStore();
+  const {
+    stars,
+    enclosures,
+    selectedStar,
+    drawerOpen,
+    openDrawer,
+    closeDrawer,
+    filterEnclosureId,
+    setFilterEnclosureId,
+  } = useStarStore();
   const [query, setQuery] = useState('');
 
   const fuse = useMemo(() => createStarFuse(stars), [stars]);
-  const filteredStars = useMemo(() => searchStars(stars, fuse, query), [stars, fuse, query]);
+  const searchedStars = useMemo(() => searchStars(stars, fuse, query), [stars, fuse, query]);
+
+  const filteredStars = useMemo(() => {
+    if (!filterEnclosureId) return searchedStars;
+    return searchedStars.filter((star) => star.enclosureId === filterEnclosureId);
+  }, [searchedStars, filterEnclosureId]);
+
+  const currentEnclosure = useMemo(() => {
+    if (!filterEnclosureId) return null;
+    return enclosures.find((enc) => enc.id === filterEnclosureId) ?? null;
+  }, [enclosures, filterEnclosureId]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, Star[]>();
@@ -40,9 +62,15 @@ export function StarListPage() {
   return (
     <VStack align="stretch" spacing={6}>
       <Box>
-        <Heading size="lg" mb={2}>
-          星官名录
-        </Heading>
+        <HStack mb={2} spacing={3}>
+          <Heading size="lg">星官名录</Heading>
+          {currentEnclosure && (
+            <Tag colorScheme="purple" size="md">
+              <TagLabel>{currentEnclosure.name}</TagLabel>
+              <TagCloseButton onClick={() => setFilterEnclosureId(null)} />
+            </Tag>
+          )}
+        </HStack>
         <Text color="gray.400" fontSize="sm">
           收录三垣星官，支持名称、垣域与简介模糊搜索。点击条目查看详情。
         </Text>
