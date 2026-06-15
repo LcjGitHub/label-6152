@@ -1,6 +1,14 @@
 import Fuse from 'fuse.js';
 import type { Star } from '@/types/star';
 
+export type SortBy = 'default' | 'magnitude-asc' | 'magnitude-desc';
+
+export const SORT_OPTIONS: { value: SortBy; label: string }[] = [
+  { value: 'default', label: '默认顺序' },
+  { value: 'magnitude-asc', label: '视星等由亮到暗' },
+  { value: 'magnitude-desc', label: '视星等由暗到亮' },
+];
+
 export interface LegendItem {
   id: string;
   title: string;
@@ -89,6 +97,18 @@ export function searchStars(stars: Star[], fuse: Fuse<Star>, query: string): Sta
     return stars;
   }
   return fuse.search(trimmed).map((result) => result.item);
+}
+
+export function sortStars(stars: Star[], sortBy: SortBy): Star[] {
+  const copy = [...stars];
+  switch (sortBy) {
+    case 'magnitude-asc':
+      return copy.sort((a, b) => a.magnitude - b.magnitude);
+    case 'magnitude-desc':
+      return copy.sort((a, b) => b.magnitude - a.magnitude);
+    default:
+      return copy;
+  }
 }
 
 /**

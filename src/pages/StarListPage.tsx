@@ -6,6 +6,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Select,
   SimpleGrid,
   Text,
   VStack,
@@ -17,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useStarStore } from '@/store/starStore';
-import { createStarFuse, searchStars } from '@/utils/starUtils';
+import { createStarFuse, searchStars, sortStars, SORT_OPTIONS, type SortBy } from '@/utils/starUtils';
 import { StarDetailDrawer } from '@/components/StarDetailDrawer';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import type { Star } from '@/types/star';
@@ -29,16 +30,18 @@ export function StarListPage() {
   const { stars, enclosures, selectedStar, drawerOpen, openDrawer, closeDrawer } = useStarStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortBy>('default');
 
   const filterEnclosureId = searchParams.get('enclosure');
 
   const fuse = useMemo(() => createStarFuse(stars), [stars]);
   const searchedStars = useMemo(() => searchStars(stars, fuse, query), [stars, fuse, query]);
+  const sortedStars = useMemo(() => sortStars(searchedStars, sortBy), [searchedStars, sortBy]);
 
   const filteredStars = useMemo(() => {
-    if (!filterEnclosureId) return searchedStars;
-    return searchedStars.filter((star) => star.enclosureId === filterEnclosureId);
-  }, [searchedStars, filterEnclosureId]);
+    if (!filterEnclosureId) return sortedStars;
+    return sortedStars.filter((star) => star.enclosureId === filterEnclosureId);
+  }, [sortedStars, filterEnclosureId]);
 
   const currentEnclosure = useMemo(() => {
     if (!filterEnclosureId) return null;
@@ -76,19 +79,35 @@ export function StarListPage() {
         </Text>
       </Box>
 
-      <InputGroup maxW="400px">
-        <InputLeftElement pointerEvents="none">
-          <SearchIcon color="gray.500" />
-        </InputLeftElement>
-        <Input
-          placeholder="搜索星官名称、垣域或简介…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+      <HStack spacing={3}>
+        <InputGroup maxW="400px" flex={1}>
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color="gray.500" />
+          </InputLeftElement>
+          <Input
+            placeholder="搜索星官名称、垣域或简介…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            bg="whiteAlpha.100"
+            border="none"
+            _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
+          />
+        </InputGroup>
+        <Select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as SortBy)}
+          maxW="220px"
           bg="whiteAlpha.100"
           border="none"
           _focus={{ bg: 'whiteAlpha.200', boxShadow: 'none' }}
-        />
-      </InputGroup>
+        >
+          {SORT_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+      </HStack>
 
       {filteredStars.length === 0 ? (
         <Text color="gray.500" py={8} textAlign="center">
