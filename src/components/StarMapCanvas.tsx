@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Text, useToken } from '@chakra-ui/react';
 import type { Star, StarHitArea, Enclosure } from '@/types/star';
 import { magnitudeToRadius, percentToPixel, hitTestStar } from '@/utils/starUtils';
@@ -7,6 +7,8 @@ interface StarMapCanvasProps {
   stars: Star[];
   enclosures: Enclosure[];
   onStarClick: (star: Star, anchorX: number, anchorY: number) => void;
+  /** 鼠标悬停星点时的回调，star 为 null 表示移出 */
+  onStarHover?: (star: Star | null, anchorX: number, anchorY: number) => void;
   /** 需要高亮定位的星官 ID */
   highlightStarId?: string | null;
 }
@@ -23,10 +25,11 @@ const ENCLOSURE_REGIONS: Record<string, { x: number; y: number; w: number; h: nu
  * 通过 forwardRef 暴露内部 canvas 元素，供父组件计算精确锚点
  */
 export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
-  function StarMapCanvas({ stars, enclosures, onStarClick, highlightStarId }, ref) {
+  function StarMapCanvas({ stars, enclosures, onStarClick, onStarHover, highlightStarId }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasNodeRef = useRef<HTMLCanvasElement | null>(null);
     const hitAreasRef = useRef<StarHitArea[]>([]);
+    const [hoveredStarId, setHoveredStarId] = useState<string | null>(null);
     const [canvasBg, dotColor, enclosureFill, enclosureBorder] = useToken('colors', [
       'star.canvas',
       'star.dot',
@@ -159,11 +162,21 @@ export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
           ctx.fill();
         }
 
+        // 悬停高亮
+        if (hoveredStarId && star.id === hoveredStarId) {
+          const hvRadius = radius + 8;
+          ctx.strokeStyle = 'rgba(255, 245, 157, 0.85)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, hvRadius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
         hitAreas.push({ star, cx, cy, radius: radius + 6 });
       });
 
       hitAreasRef.current = hitAreas;
-    }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId]);
+    }, [stars, enclosures, canvasBg, dotColor, enclosureFill, enclosureBorder, highlightStarId, hoveredStarId]);
 
     useEffect(() => {
       draw();
@@ -189,12 +202,49 @@ export const StarMapCanvas = forwardRef<HTMLCanvasElement, StarMapCanvasProps>(
       }
     };
 
+    /**
+     * 处理鼠标移动，检测悬停星点
+     */
+    const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const canvas = canvasNodeRef.current;
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+
+      const hit = hitTestStar(hitAreasRef.current, px, py);
+      if (hit) {
+        if (hoveredStarId !== hit.id) {
+          setHoveredStarId(hit.id);
+        }
+        onStarHover?.(hit, e.clientX, e.clientY);
+      } else {
+        if (hoveredStarId !== null) {
+          setHoveredStarId(null);
+        }
+        onStarHover?.(null, e.clientX, e.clientY);
+      }
+    };
+
+    /**
+     * 处理鼠标离开画布
+     */
+    const handleMouseLeave = () => {
+      if (hoveredStarId !== null) {
+        setHoveredStarId(null);
+      }
+      onStarHover?.(null, 0, 0);
+    };
+
     return (
       <Box ref={containerRef} position="relative" w="full" h="520px" borderRadius="lg" overflow="hidden">
         <canvas
           ref={setCanvasRef}
           onClick={handleClick}
-          style={{ cursor: 'crosshair', display: 'block' }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ cursor: hoveredStarId ? 'pointer' : 'crosshair', display: 'block' }}
         />
         <Text
           position="absolute"

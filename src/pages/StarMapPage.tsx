@@ -3,6 +3,7 @@ import { Box, Heading, Text, VStack, HStack } from '@chakra-ui/react';
 import { useStarStore } from '@/store/starStore';
 import { StarMapCanvas } from '@/components/StarMapCanvas';
 import { StarDetailPopover } from '@/components/StarDetailPopover';
+import { StarTooltip } from '@/components/StarTooltip';
 import { LegendPanel } from '@/components/LegendPanel';
 import { percentToPixel } from '@/utils/starUtils';
 import type { Star, PopoverAnchor } from '@/types/star';
@@ -16,6 +17,8 @@ export function StarMapPage() {
   const [anchor, setAnchor] = useState<PopoverAnchor | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [highlightStarId, setHighlightStarId] = useState<string | null>(null);
+  const [hoveredStar, setHoveredStar] = useState<Star | null>(null);
+  const [hoverAnchor, setHoverAnchor] = useState<PopoverAnchor | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleStarClick = (star: Star, anchorX: number, anchorY: number) => {
@@ -23,6 +26,15 @@ export function StarMapPage() {
     setAnchor({ x: anchorX, y: anchorY });
     setPopoverOpen(true);
     setHighlightStarId(star.id);
+  };
+
+  const handleStarHover = (star: Star | null, anchorX: number, anchorY: number) => {
+    setHoveredStar(star);
+    if (star) {
+      setHoverAnchor({ x: anchorX, y: anchorY });
+    } else {
+      setHoverAnchor(null);
+    }
   };
 
   const handleClosePopover = () => {
@@ -79,6 +91,7 @@ export function StarMapPage() {
             stars={stars}
             enclosures={enclosures}
             onStarClick={handleStarClick}
+            onStarHover={handleStarHover}
             highlightStarId={highlightStarId}
           />
           <StarDetailPopover
@@ -86,6 +99,10 @@ export function StarMapPage() {
             anchor={anchor}
             isOpen={popoverOpen}
             onClose={handleClosePopover}
+          />
+          <StarTooltip
+            star={hoveredStar}
+            anchor={hoverAnchor}
           />
         </Box>
         <LegendPanel />
